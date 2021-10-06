@@ -1,7 +1,7 @@
 #pragma once
 
 
-#define Float
+#define Double
 
 #ifdef Float
 typedef float real;

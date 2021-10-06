@@ -31,7 +31,7 @@ void input(real* Al, real* Di, real* b, int* Ia, int n, int m)
 	{
 		fscanf_s(in, "%d", &(Ia[i]));
 	}
-}
+
    fopen_s(&in, "b.txt", "r");
    for (int i = 0; i < n; i++)
    {
