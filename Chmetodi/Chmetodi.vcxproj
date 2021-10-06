@@ -147,6 +147,14 @@
     <ClInclude Include="InOut.h" />
     <ClInclude Include="SolveSLAE.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Al.txt" />
+    <Text Include="b.txt" />
+    <Text Include="Di.txt" />
+    <Text Include="dims.txt" />
+    <Text Include="Ia.txt" />
+    <Text Include="out.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
