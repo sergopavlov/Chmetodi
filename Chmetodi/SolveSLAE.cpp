@@ -62,6 +62,7 @@ void GaussD(real* Al, real* Di, int* Ia, int* D, int n, real* b)
    {
       b[i] *= D[i];
    }
+   // test
 }
 void GaussLT(real* Al, real* Di, int* Ia, int* D, int n, real* b)
 {
