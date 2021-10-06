@@ -31,16 +31,20 @@ void input(real* Al, real* Di, real* b, int* Ia, int n, int m)
 	{
 		fscanf_s(in, "%d", &(Ia[i]));
 	}
+}
+   fopen_s(&in, "b.txt", "r");
+   for (int i = 0; i < n; i++)
+   {
+      fscanf_s(in, str2, &(b[i]));
+   }
+   fclose(in);
 
-
-	fclose(in);
-
-	/*fopen_s(&in, "b.txt", "r");
-	for (int i = 0; i < n; i++)
-	{
-	   fscanf_s(in, "%f", &(b[i]));
-	}
-	fclose(in);*/
+   fopen_s(&in, "Ia.txt", "r");
+   for (int i = 0; i <= n; i++)
+   {
+      fscanf_s(in, "%d", &(Ia[i]));
+   }
+   fclose(in);
 }
 
 void output(real* x, int n)

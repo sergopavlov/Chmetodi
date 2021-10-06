@@ -1,28 +1,34 @@
 #include "SolveSLAE.h"
 #include <iostream>
+#include <stdlib.h>
+#include "time.h"
+
 void Solve(real* Al, real* Di, int* Ia, int* D, int n, real* b)
 {
+
 	LDLT(Al, Di, Ia, D, n);
 	GaussL(Al, Di, Ia, D, n, b);
 	GaussD(D, n, b);
 	GaussLT(Al, Di, Ia, D, n, b);
+
 }
 void LDLT(real* Al, real* Di, int* Ia, int* D, int n)
 {
 
+
 	for (int i = 0; i < n; i++)
 	{
 		reals sumrow = 0;
-		int j0 = i - (Ia[i + 1] - Ia[i]);//ñ êàêîãî j íà÷èíàåòñÿ ïðîôèëü iòîé ñòðîêè
-		//â ñëåäóþùåì öèêëå ïðîõîäèòñÿ ïðîôèëü iòîé ñòðîêè äî äèàãîíàëè
+		int j0 = i - (Ia[i + 1] - Ia[i]);//Ã± ÃªÃ ÃªÃ®Ã£Ã® j Ã­Ã Ã·Ã¨Ã­Ã Ã¥Ã²Ã±Ã¿ Ã¯Ã°Ã®Ã´Ã¨Ã«Ã¼ iÃ²Ã®Ã© Ã±Ã²Ã°Ã®ÃªÃ¨
+		//Ã¢ Ã±Ã«Ã¥Ã¤Ã³Ã¾Ã¹Ã¥Ã¬ Ã¶Ã¨ÃªÃ«Ã¥ Ã¯Ã°Ã®ÃµÃ®Ã¤Ã¨Ã²Ã±Ã¿ Ã¯Ã°Ã®Ã´Ã¨Ã«Ã¼ iÃ²Ã®Ã© Ã±Ã²Ã°Ã®ÃªÃ¨ Ã¤Ã® Ã¤Ã¨Ã Ã£Ã®Ã­Ã Ã«Ã¨
 		int dind = j0;
-		for (int ii = Ia[i]; ii < Ia[i + 1]; ii++, dind++)//iiòûé ýëåìåíò Al ýòî iòûé ýëåìåíò ïðîôèëÿ iòîé ñòðîêè
+		for (int ii = Ia[i]; ii < Ia[i + 1]; ii++, dind++)//iiÃ²Ã»Ã© Ã½Ã«Ã¥Ã¬Ã¥Ã­Ã² Al Ã½Ã²Ã® iÃ²Ã»Ã© Ã½Ã«Ã¥Ã¬Ã¥Ã­Ã² Ã¯Ã°Ã®Ã´Ã¨Ã«Ã¿ iÃ²Ã®Ã© Ã±Ã²Ã°Ã®ÃªÃ¨
 		{
-			int j = j0 + ii - Ia[i];//j òåêóùåãî ýëåìåíòà
-			int j0j = j - (Ia[j + 1] - Ia[j]);//ñ êàêîãî j íà÷èíàåòñÿ ïðîôèëü jòîé ñòðîêè
+			int j = j0 + ii - Ia[i];//j Ã²Ã¥ÃªÃ³Ã¹Ã¥Ã£Ã® Ã½Ã«Ã¥Ã¬Ã¥Ã­Ã²Ã 
+			int j0j = j - (Ia[j + 1] - Ia[j]);//Ã± ÃªÃ ÃªÃ®Ã£Ã® j Ã­Ã Ã·Ã¨Ã­Ã Ã¥Ã²Ã±Ã¿ Ã¯Ã°Ã®Ã´Ã¨Ã«Ã¼ jÃ²Ã®Ã© Ã±Ã²Ã°Ã®ÃªÃ¨
 
 			int kbeg = j0 > j0j ? j0 : j0j;
-			int kend = i > j ? j : i;//âûáèðàèì íàèìåíüøèé èç ïðîôèëåé iòîé è jòîé ñòðîêè
+			int kend = i > j ? j : i;//Ã¢Ã»Ã¡Ã¨Ã°Ã Ã¨Ã¬ Ã­Ã Ã¨Ã¬Ã¥Ã­Ã¼Ã¸Ã¨Ã© Ã¨Ã§ Ã¯Ã°Ã®Ã´Ã¨Ã«Ã¥Ã© iÃ²Ã®Ã© Ã¨ jÃ²Ã®Ã© Ã±Ã²Ã°Ã®ÃªÃ¨
 			real cursum = 0;
 			int indexi = Ia[i] + kbeg - j0;
 			int indexj = Ia[j] + kbeg - j0j;
@@ -51,6 +57,7 @@ void GaussL(real* Al, real* Di, int* Ia, int* D, int n, real* b)
 		}
 		b[i] = (b[i] - cursum) / Di[i];
 	}
+
 }
 
 void GaussD(int* D, int n, real* b)
@@ -192,4 +199,5 @@ void GenegateGilbert(real* Al, real* Di, int* Ia, int n)
 			Al[ind] = 1.0 / (i + j + 1);
 		}
 	}
+
 }

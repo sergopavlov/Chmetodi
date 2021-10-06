@@ -11,7 +11,7 @@ int main()
 	real* Al = new real[m];
 	real* Di = new real[n];
 	real* b = new real[n];
-	int* Ia = new int[n + 1];//хранится индекс массива с которого начинается iтая строка
+	int* Ia = new int[n + 1];//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ iпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 	int* D = new int[n];
 	Al[0] = -2;
 	Al[1] = -4;
@@ -164,7 +164,41 @@ int main()
 			printf_s(str, b[i], fabsf(b[i] - xtrue[i]));
 		}
 	}*/
+
 }
 
+/*  GenerateAk(Al, Di, Ia, n, k, b);
+
+
+  FILE* in;
+  fopen_s(&in, "Al.txt", "w");
+  for (int i = 0; i < Ia[n]; i++)
+  {
+     fprintf_s(in, "%f ", Al[i]);
+  }
+  fclose(in);
+
+  fopen_s(&in, "Di.txt", "w");
+  for (int i = 0; i < n; i++)
+  {
+     fprintf_s(in, "%f ", Di[i]);
+  }
+  fclose(in);
+
+  fclose(in);
+
+  fopen_s(&in, "b.txt", "w");
+  for (int i = 0; i < n; i++)
+  {
+     fprintf_s(in, "%f ", b[i]);
+  }
+  fclose(in);
+
+  fopen_s(&in, "Ia.txt", "w");
+  for (int i = 0; i <= n; i++)
+  {
+     fprintf_s(in, "%d ", Ia[i]);
+  }
+  fclose(in);*/
 
 
