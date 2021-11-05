@@ -8,7 +8,6 @@ int main()
    real** mat;
    real* b;
    real* x0;
-   real* x000;
    real* xtrue;
    real precision;
    int maxiter, n, m;
@@ -16,7 +15,6 @@ int main()
    mat = new real * [7];
    b = new real[n];
    x0 = new real[n];
-   x000 = new real[n];
    xtrue = new real[n];
    for (int i = 0; i < n; i++)
    {
@@ -27,45 +25,12 @@ int main()
       mat[i] = new real[n];
    }
    Input(n, m, mat, b, x0);
-   for (int i = 0; i < n; i++)
-   {
-      x000[i] = x0[i];
-   }
    real* x = new real[n];
-   real omega = 0.1;
-   int k;
-   /*SolveZeidelRelax(n, m, precision, maxiter, mat, b, x0, omega);
-   real residual = 0;
-   real* curF = new real[n];
-   MatrixMult(n, m, mat, x0, curF);
-   real summ1 = 0;
-   real summ2 = 0;
-   real summ3 = 0;
-   real summ4 = 0;
+   real omega = 1.1;
+   SolveZeidelRelax(n, m, precision, maxiter, mat, b, x0, omega);
    for (int i = 0; i < n; i++)
    {
-      summ1 += (b[i] - curF[i]) * (b[i] - curF[i]);
-      summ2 += b[i] * b[i];
-      summ3 += (xtrue[i] - x0[i]) * (xtrue[i] - x0[i]);
-      summ4 += xtrue[i] * xtrue[i];
-   }
-   residual = sqrt(summ1 / summ2);
-   real pogreshnost = sqrt(summ3 / summ4);
-   real nu = pogreshnost / residual;
-   printf_s("%f", nu);*/
-
-   for (int i = 0; i < 20; i++)
-   {
-      for (int i = 0; i < n; i++)
-      {
-         x0[i] = x000[i];
-      }
-      k = SolveZeidelRelax(n, m, precision, maxiter, mat, b, x0, omega);
-      for (int j = 0; j < n; j++)
-      {
-         printf_s("%f %f %f %d\n", omega, x0[j], xtrue[j]-x0[j], k);
-      }
-      omega += 0.1;
+      printf_s("%f\n", x0[i]);
    }
 }
 
@@ -167,7 +132,7 @@ int SolveJacobiRelax(int n, int m, real precision, int maxiter, real** mat, real
 }
 
 int  SolveZeidelRelax(int n, int m, real precision, int maxiter, real** mat, real* b, real* x0, real omega)
-{
+{  
    int k = 0;
    real relativeresidual = 1;
    real* curb;
