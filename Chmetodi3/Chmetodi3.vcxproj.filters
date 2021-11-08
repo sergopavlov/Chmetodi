@@ -22,4 +22,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="di.txt">
+      <Filter>txt</Filter>
+    </Text>
+    <Text Include="al.txt">
+      <Filter>txt</Filter>
+    </Text>
+    <Text Include="ia.txt">
+      <Filter>txt</Filter>
+    </Text>
+    <Text Include="ja.txt">
+      <Filter>txt</Filter>
+    </Text>
+  </ItemGroup>
 </Project>
