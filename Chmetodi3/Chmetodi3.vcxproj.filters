@@ -23,8 +23,17 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="laba3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <Text Include="di.txt">
+      <Filter>txt</Filter>
+    </Text>
+    <Text Include="al.txt">
+      <Filter>txt</Filter>
+    </Text>
+    <Text Include="ia.txt">
+      <Filter>txt</Filter>
+    </Text>
+    <Text Include="ja.txt">
+      <Filter>txt</Filter>
+    </Text>
   </ItemGroup>
 </Project>

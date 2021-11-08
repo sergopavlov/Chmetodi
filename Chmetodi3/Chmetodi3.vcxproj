@@ -144,6 +144,12 @@
   <ItemGroup>
     <ClInclude Include="laba3.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="al.txt" />
+    <Text Include="di.txt" />
+    <Text Include="ia.txt" />
+    <Text Include="ja.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
