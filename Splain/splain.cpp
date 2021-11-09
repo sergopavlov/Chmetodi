@@ -11,7 +11,7 @@ int main()
 	{
 		grid[i] = i;
 	}
-	real res =getsollution(2.5, n, grid, nullptr);
+	real res = getsollution(2.5, n, grid, nullptr);
 	printf_s("%f", res);
 }
 
@@ -41,5 +41,9 @@ real getsollution(real x, int n, real* grid, real* q)
 			right = cur;
 		cur = (left + right) / 2;
 	}
-	
+	real h = (grid[right] - grid[left]);
+	real t = (x - grid[left]) / h;
+	real res = 0;
+	res += q[2 * left] * 2 * (t + 0.5)(t - 1) * (t - 1);
+	res += q[2 * left + 1] * t * (t - 1) * (t - 1) / h;//h??
 }
