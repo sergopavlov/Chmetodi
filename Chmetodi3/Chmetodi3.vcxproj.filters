@@ -35,5 +35,24 @@
     <Text Include="ja.txt">
       <Filter>txt</Filter>
     </Text>
+    <Text Include="params.txt">
+      <Filter>txt</Filter>
+    </Text>
+    <Text Include="x0.txt">
+      <Filter>txt</Filter>
+    </Text>
+    <Text Include="b.txt">
+      <Filter>txt</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="laba3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="mat.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
