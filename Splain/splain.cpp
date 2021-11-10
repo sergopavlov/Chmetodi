@@ -1,16 +1,16 @@
 #include <SFML/Graphics.hpp>
 #include <stdio.h>
 #include "Splain.h"
-#include <cmath>
+#include <math.h>
 #include <string>
 #include <sstream>
 
-
+# define M_PI           3.14159265358979323846
 using namespace sf;
 
 int main()
 {
-   int n = 5;
+   int n = 20;
    real* grid = new real[n];
    real h = 0.5;
    for (int i = 0; i < n; i++)
@@ -185,5 +185,5 @@ void getfuncarray(int n, real* f, real* grid)
 }
 real  func(real x)
 {
-   return x * x * x;
+   return sin(M_PI*x)*x;
 }

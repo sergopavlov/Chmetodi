@@ -104,7 +104,7 @@ int MSG(int* ia, int* ja, int n, real* al, real* di, real* x, real* b, int maxit
          x[i] += alpha * z[i];
          r[i] -= alpha * Az[i];
       }
-      betta = 1 / rnorm * rnorm;
+      betta = - 1 / rnorm * rnorm;
       rnorm = sqrt(DotProduct(r, r, n));
       betta *= rnorm * rnorm;
       for (int i = 0; i < n; i++)
