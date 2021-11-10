@@ -135,11 +135,10 @@ real GetMinEugenvalue(int n, int* ia, real* di, real* au, real* al)
    int maxiter = 10000;
    real* x = new real[n];
    real* x1 = new real[n];
-   x[0] = 1;
    real lambda;
-   for (int i = 1; i < n; i++)
+   for (int i = 0; i < n; i++)
    {
-      x[i] = 0;
+      x[i] = 1;
    }
    real maxdeltalambda = 1;
    int k = 0;
@@ -177,15 +176,14 @@ real GetMinEugenvalue(int n, int* ia, real* di, real* au, real* al)
 
 real GetMaxEugenValue(int n, int* ia, real* di, real* au, real* al)
 {
-   real eps = 0.0001;
+   real eps = 0.00001;
    int maxiter = 10000;
    real* x = new real[n];
    real* x1 = new real[n];
-   x[0] = 1;
    real lambda;
-   for (int i = 1; i < n; i++)
+   for (int i = 0; i < n; i++)
    {
-      x[i] = 0;
+      x[i] = 1;
    }
    real maxdeltalambda = 1;
    int k = 0;
