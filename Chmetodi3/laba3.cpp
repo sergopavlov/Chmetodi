@@ -21,7 +21,7 @@ int main()
    }
    input(ia, ja, di, al, x0, b, n, m);
    int k = MSG(ia, ja, n, al, di, x0, b, maxiter, eps);
-   printf_s("asdasd");
+   printf_s("%d", k);
 
 }
 
@@ -83,39 +83,75 @@ int MSG(int* ia, int* ja, int n, real* al, real* di, real* x, real* b, int maxit
 {
    real bnorm = sqrt(DotProduct(b, b, n));
    real* r = new real[n];
-   real* z = new real[n];
-   real* Az = new real[n];
+   real* p = new real[n];
+   real* q = new real[n];
    MatrixMult(ia, ja, n, al, di, x, r);
    for (int i = 0; i < n; i++)
    {
       r[i] = b[i] - r[i];
-      z[i] = r[i];
+      p[i] = r[i];
    }
-   real* p = new real[n];
-   MatrixMult(ia, ja, n, al, di, z, p);
    int k = 0;
    real alpha, betta, rnorm = sqrt(DotProduct(r, r, n));
    while (k<maxiter && rnorm / bnorm>eps)
    {
-      MatrixMult(ia, ja, n, al, di, z, Az);
-      alpha = rnorm * rnorm / DotProduct(Az, z, n);
+      MatrixMult(ia, ja, n, al, di, p, q);
+      alpha = DotProduct(r, r, n) / DotProduct(q, p, n);
+      betta = 1 / DotProduct(r, r, n);
       for (int i = 0; i < n; i++)
       {
-         x[i] += alpha * z[i];
-         r[i] -= alpha * Az[i];
+         x[i] += alpha * p[i];
+         r[i] -= alpha * q[i];
       }
-      betta = - 1 / rnorm * rnorm;
       rnorm = sqrt(DotProduct(r, r, n));
-      betta *= rnorm * rnorm;
+      betta *= DotProduct(r, r, n);
       for (int i = 0; i < n; i++)
       {
-         z[i] = r[i] + betta * z[i];
+         p[i] = r[i] + betta * p[i];
       }
       k++;
    }
-   printf_s("relative residual is: %f\n", rnorm * bnorm);
+   printf_s("relative residual is: %f\n", rnorm / bnorm);
    return k;
 }
+
+int LOS(int* ia, int* ja, int n, real* al, real* di, real* x, real* b, int maxiter, real eps)
+{
+   real bnorm = sqrt(DotProduct(b, b, n));
+   real* r = new real[n];
+   real* q = new real[n];
+   real* p = new real[n];
+   MatrixMult(ia, ja, n, al, di, x, r);
+   for (int i = 0; i < n; i++)
+   {
+      r[i] = b[i] - r[i];
+      p[i] = r[i];
+   }
+   MatrixMult(ia, ja, n, al, di, p, q);
+   int k = 0;
+   real alpha, betta, rnorm = sqrt(DotProduct(r, r, n));
+   while (k<maxiter && rnorm / bnorm>eps)
+   {
+      alpha = DotProduct(q, r, n) / DotProduct(q, q, n);
+      for (int i = 0; i < n; i++)
+      {
+         x[i] += alpha * p[i];
+         r[i] -= alpha * q[i];
+      }
+      MatrixMult(ia, ja, n, al, di, p, q);
+      betta = -DotProduct(r, r, n);
+
+      rnorm = sqrt(DotProduct(r, r, n));
+      for (int i = 0; i < n; i++)
+      {
+         p[i] = r[i] + betta * p[i];
+      }
+      k++;
+   }
+   printf_s("relative residual is: %f\n", rnorm / bnorm);
+   return k;
+}
+
 
 real DotProduct(real* x, real* y, int n)
 {

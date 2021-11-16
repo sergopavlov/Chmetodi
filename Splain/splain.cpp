@@ -10,7 +10,7 @@ using namespace sf;
 
 int main()
 {
-   int n = 20;
+   int n = 16;
    real* grid = new real[n];
    real h = 0.5;
    for (int i = 0; i < n; i++)
@@ -33,7 +33,7 @@ int main()
    font.loadFromFile("C:\\Windows\\Fonts\\Arial.ttf");
    int plotparameter = 100;
    ContextSettings settings;
-   settings.antialiasingLevel = 2;
+   settings.antialiasingLevel = 7;
    RenderWindow window(VideoMode(750, 500), "Splain!", Style::Default, settings);
    while (window.isOpen())
    {
@@ -69,25 +69,51 @@ int main()
       y.setCharacterSize(18);
       y.move(Vector2f(43, 25));
       window.draw(y);
-      for (int i = 0; i < n; i++)
+      if (n <= 15)
       {
-         Vertex line[] =
+         for (int i = 0; i < n; i++)
          {
-            Vertex(Vector2f(50 + 650 * (grid[i] - grid[0]) / (grid[n - 1] - grid[0]),455)),
-            Vertex(Vector2f(50 + 650 * (grid[i] - grid[0]) / (grid[n - 1] - grid[0]),445))
-         };
-         line[0].color = Color::Black;
-         line[1].color = Color::Black;
-         window.draw(line, 2, Lines);
-         Text text;
-         text.setFont(font);
-         std::ostringstream oss;
-         oss << grid[i];
-         text.setString(oss.str());
-         text.setFillColor(Color::Black);
-         text.setCharacterSize(18);
-         text.move(Vector2f(50 + 650 * (grid[i] - grid[0]) / (grid[n - 1] - grid[0]) - 9, 460));
-         window.draw(text);
+            Vertex line[] =
+            {
+               Vertex(Vector2f(50 + 650 * (grid[i] - grid[0]) / (grid[n - 1] - grid[0]),455)),
+               Vertex(Vector2f(50 + 650 * (grid[i] - grid[0]) / (grid[n - 1] - grid[0]),445))
+            };
+            line[0].color = Color::Black;
+            line[1].color = Color::Black;
+            window.draw(line, 2, Lines);
+            Text text;
+            text.setFont(font);
+            std::ostringstream oss;
+            oss << grid[i];
+            text.setString(oss.str());
+            text.setFillColor(Color::Black);
+            text.setCharacterSize(18);
+            text.move(Vector2f(50 + 650 * (grid[i] - grid[0]) / (grid[n - 1] - grid[0]) - 9, 460));
+            window.draw(text);
+         }
+      }
+      else
+      {
+         for (int i = 0; i < 11; i++)
+         {
+            Vertex line[] =
+            {
+               Vertex(Vector2f(50 + 650 * i / 10,455)),
+               Vertex(Vector2f(50 + 650 * i / 10,445))
+            };
+            line[0].color = Color::Black;
+            line[1].color = Color::Black;
+            window.draw(line, 2, Lines);
+            Text text;
+            text.setFont(font);
+            std::ostringstream oss;
+            oss << i * (grid[n - 1] - grid[0]) / 10;
+            text.setString(oss.str());
+            text.setFillColor(Color::Black);
+            text.setCharacterSize(18);
+            text.move(Vector2f(50 + 650 * i / 10 - 9, 460));
+            window.draw(text);
+         }
       }
       for (int i = 0; i < 11; i++)
       {
@@ -110,11 +136,11 @@ int main()
          window.draw(text);
       }
       Vertex* plottrue = new Vertex[plotparameter];
-      real h = (grid[n - 1] - grid[0])/(plotparameter-1);
+      real h = (grid[n - 1] - grid[0]) / (plotparameter - 1);
       real curx = grid[0];
       for (int i = 0; i < plotparameter; i++)
       {
-         plottrue[i] = Vertex(Vector2f(50 + 650*(curx - grid[0]) / (grid[n - 1] - grid[0]), 450 - 400 * (func(curx) - minf) / (maxf - minf)));
+         plottrue[i] = Vertex(Vector2f(50 + 650 * (curx - grid[0]) / (grid[n - 1] - grid[0]), 450 - 400 * (func(curx) - minf) / (maxf - minf)));
          curx += h;
          plottrue[i].color = Color::Blue;
       }
@@ -124,7 +150,7 @@ int main()
       curx = grid[0];
       for (int i = 0; i < plotparameter; i++)
       {
-         plotsplain[i] = Vertex(Vector2f(50 + 650 * (curx - grid[0]) / (grid[n - 1] - grid[0]), 450 - 400 * (getsollution(curx,n,grid,q) - minf) / (maxf - minf)));
+         plotsplain[i] = Vertex(Vector2f(50 + 650 * (curx - grid[0]) / (grid[n - 1] - grid[0]), 450 - 400 * (getsollution(curx, n, grid, q) - minf) / (maxf - minf)));
          curx += h;
          plotsplain[i].color = Color::Red;
       }
