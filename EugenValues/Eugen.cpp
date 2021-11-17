@@ -16,8 +16,9 @@ int main()
    real* di = new real[n];
    input(al, au, di, ia, n, m);
    real lambdamax = GetMaxEugenValue(n, ia, di, au, al);
-   real lambdamin = GetMinEugenvalue(n, ia, di, au, al);
-   printf_s("%f %f", lambdamax,lambdamin);
+  real lambdamin = GetMinEugenvalue(n, ia, di, au, al);
+
+   printf_s("%f %f", lambdamax, lambdamin);
 }
 
 void input(real* al, real* au, real* di, int* ia, int n, int m)
@@ -135,6 +136,7 @@ real GetMinEugenvalue(int n, int* ia, real* di, real* au, real* al)
    int maxiter = 10000;
    real* x = new real[n];
    real* x1 = new real[n];
+   x[0] = 1;
    real lambda;
    for (int i = 0; i < n; i++)
    {
