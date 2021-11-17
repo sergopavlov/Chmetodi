@@ -15,12 +15,12 @@ int main()
    real h = 0.5;
    for (int i = 0; i < n; i++)
    {
-      grid[i] = i * 0.5;
+      grid[i] = i * 1;
    }
    real* f = new real[n];
    real* q = new real[2 * n];
    getfuncarray(n, f, grid);
-   splain(grid, f, q, n);
+   ISplain(grid, f, q, n);
    real minf = f[0], maxf = f[0];
    for (int i = 1; i < n; i++)
    {
@@ -31,7 +31,7 @@ int main()
    }
    Font font;
    font.loadFromFile("C:\\Windows\\Fonts\\Arial.ttf");
-   int plotparameter = 100;
+   int plotparameter = 200;
    ContextSettings settings;
    settings.antialiasingLevel = 7;
    RenderWindow window(VideoMode(750, 500), "Splain!", Style::Default, settings);
@@ -150,7 +150,7 @@ int main()
       curx = grid[0];
       for (int i = 0; i < plotparameter; i++)
       {
-         plotsplain[i] = Vertex(Vector2f(50 + 650 * (curx - grid[0]) / (grid[n - 1] - grid[0]), 450 - 400 * (getsollution(curx, n, grid, q) - minf) / (maxf - minf)));
+         plotsplain[i] = Vertex(Vector2f(50 + 650 * (curx - grid[0]) / (grid[n - 1] - grid[0]), 450 - 400 * (getsollutionISplain(curx, n, grid, q) - minf) / (maxf - minf)));
          curx += h;
          plotsplain[i].color = Color::Red;
       }
@@ -164,7 +164,7 @@ int main()
    }
 }
 
-void splain(real* grid, real* f, real* q, int n)
+void ISplain(real* grid, real* f, real* q, int n)
 {
    q[0] = f[0];
    q[1] = (f[1] - f[0]) / (grid[1] - grid[0]);
@@ -177,7 +177,7 @@ void splain(real* grid, real* f, real* q, int n)
    q[2 * n - 1] = (f[n - 1] - f[n - 2]) / (grid[n - 1] - grid[n - 2]);
 }
 
-real getsollution(real x, int n, real* grid, real* q)
+real getsollutionISplain(real x, int n, real* grid, real* q)
 {
    if (x > grid[n - 1] || x < grid[0])
       return NAN;
@@ -211,5 +211,5 @@ void getfuncarray(int n, real* f, real* grid)
 }
 real  func(real x)
 {
-   return x * x * x;
+   return x * sin(x);
 }
