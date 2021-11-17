@@ -14,6 +14,8 @@ void Solve(real* Al, real* Di, int* Ia, int* D, int n, real* b)
 }
 void LDLT(real* Al, real* Di, int* Ia, int* D, int n)
 {
+
+
    for (int i = 0; i < n; i++)
    {
       reals sumrow = 0;
