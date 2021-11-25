@@ -20,9 +20,8 @@ int main()
       xtrue[i] = i + 1;
    }
    input(ia, ja, di, al, x0, b, n, m);
-   int k = MSG(ia, ja, n, al, di, x0, b, maxiter, eps);
+   int k = LOS(ia, ja, n, al, di, x0, b, maxiter, eps);
    printf_s("%d", k);
-
 }
 
 void inputparams(int* n, int* m, int* maxiter, real* eps)
@@ -119,32 +118,33 @@ int LOS(int* ia, int* ja, int n, real* al, real* di, real* x, real* b, int maxit
 {
    real bnorm = sqrt(DotProduct(b, b, n));
    real* r = new real[n];
-   real* q = new real[n];
    real* p = new real[n];
+   real* z = new real[n];
+   real* Ar = new real[n];
    MatrixMult(ia, ja, n, al, di, x, r);
    for (int i = 0; i < n; i++)
    {
       r[i] = b[i] - r[i];
-      p[i] = r[i];
+      z[i] = r[i];
    }
-   MatrixMult(ia, ja, n, al, di, p, q);
+   MatrixMult(ia, ja, n, al, di, z, p);
    int k = 0;
    real alpha, betta, rnorm = sqrt(DotProduct(r, r, n));
    while (k<maxiter && rnorm / bnorm>eps)
    {
-      alpha = DotProduct(q, r, n) / DotProduct(q, q, n);
+      alpha = DotProduct(p, r, n) / DotProduct(p, p, n);
       for (int i = 0; i < n; i++)
       {
-         x[i] += alpha * p[i];
-         r[i] -= alpha * q[i];
+         x[i] += alpha * z[i];
+         r[i] -= alpha * p[i];
       }
-      MatrixMult(ia, ja, n, al, di, p, q);
-      betta = -DotProduct(r, r, n);
-
+      MatrixMult(ia, ja, n, al, di, r, Ar);
+      betta = -DotProduct(p, Ar, n) / DotProduct(p, p, n);
       rnorm = sqrt(DotProduct(r, r, n));
       for (int i = 0; i < n; i++)
       {
-         p[i] = r[i] + betta * p[i];
+         z[i] = r[i] + betta * z[i];
+         p[i] = Ar[i] + betta * p[i];
       }
       k++;
    }

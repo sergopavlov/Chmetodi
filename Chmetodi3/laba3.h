@@ -3,6 +3,8 @@ typedef  float real;
 
 int MSG(int* ia, int* ja, int n, real* al, real* di, real* x, real* b, int maxiter, real eps);
 
+int LOS(int* ia, int* ja, int n, real* al, real* di, real* x, real* b, int maxiter, real eps);
+
 real DotProduct(real* x, real* y, int n);
 
 void MatrixMult(int* ia, int* ja, int n, real* al, real* di, real* x, real* b);
