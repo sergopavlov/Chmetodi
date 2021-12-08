@@ -17,3 +17,6 @@ real psi2(real t);
 real psi3(real t);
 
 real psi4(real t);
+void MatrixMult(int* ia, int* ja, int n, real* al, real* di, real* x, real* b);
+real DotProduct(real* x, real* y, int n);
+int MSG(int* ia, int* ja, int n, real* al, real* di, real* x, real* b, int maxiter, real eps);

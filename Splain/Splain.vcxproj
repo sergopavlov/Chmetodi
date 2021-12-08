@@ -145,11 +145,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="SolveSLAE.cpp" />
     <ClCompile Include="splain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SolveSLAE.h" />
     <ClInclude Include="Splain.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
