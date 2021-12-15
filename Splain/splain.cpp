@@ -6,7 +6,7 @@
 #include <sstream>
 
 
-# define M_PI           3.14159265358979323846
+# define M_PI     3.14159265358979323846
 using namespace sf;
 
 int main()
@@ -51,7 +51,10 @@ int main()
    int plotparameter = 500;
    ContextSettings settings;
    settings.antialiasingLevel = 7;
-   RenderWindow window(VideoMode(750, 500), "Splain!", Style::Default, settings);
+   unsigned int xwidth = 750;
+   unsigned int ywidth = 500;
+
+   RenderWindow window(VideoMode(xwidth, ywidth), "Splain!", Style::Default, settings);
    while (window.isOpen())
    {
       Event event;
@@ -64,8 +67,8 @@ int main()
       Vertex Axis[] =
       {
          Vertex(Vector2f(50,50)),
-         Vertex(Vector2f(50,450)),
-         Vertex(Vector2f(700,450))
+         Vertex(Vector2f(50,ywidth - 50)),
+         Vertex(Vector2f(xwidth - 50,ywidth - 50))
       };
       for (int i = 0; i < 3; i++)
       {
@@ -77,7 +80,7 @@ int main()
       textx.setString("X");
       textx.setFillColor(Color::Black);
       textx.setCharacterSize(18);
-      textx.move(Vector2f(725, 440));
+      textx.move(Vector2f(xwidth - 25, ywidth - 50));
       window.draw(textx);
       Text texty;
       texty.setFont(font);
@@ -92,8 +95,8 @@ int main()
          {
             Vertex line[] =
             {
-               Vertex(Vector2f(50 + 650 * (grid[i] - grid[0]) / (grid[n - 1] - grid[0]),455)),
-               Vertex(Vector2f(50 + 650 * (grid[i] - grid[0]) / (grid[n - 1] - grid[0]),445))
+               Vertex(Vector2f(50 + (xwidth - 100) * (grid[i] - grid[0]) / (grid[n - 1] - grid[0]),ywidth - 45)),
+               Vertex(Vector2f(50 + (xwidth - 100) * (grid[i] - grid[0]) / (grid[n - 1] - grid[0]),ywidth - 55))
             };
             line[0].color = Color::Black;
             line[1].color = Color::Black;
@@ -105,7 +108,7 @@ int main()
             text.setString(oss.str());
             text.setFillColor(Color::Black);
             text.setCharacterSize(18);
-            text.move(Vector2f(50 + 650 * (grid[i] - grid[0]) / (grid[n - 1] - grid[0]) - 9, 460));
+            text.move(Vector2f(50 + (xwidth - 100) * (grid[i] - grid[0]) / (grid[n - 1] - grid[0]) - 9, ywidth - 40));
             window.draw(text);
          }
       }
@@ -115,8 +118,8 @@ int main()
          {
             Vertex line[] =
             {
-               Vertex(Vector2f(50 + 650 * i / 10,455)),
-               Vertex(Vector2f(50 + 650 * i / 10,445))
+               Vertex(Vector2f(50 + (xwidth - 100) * i / 10,ywidth - 45)),
+               Vertex(Vector2f(50 + (xwidth - 100) * i / 10,ywidth - 55))
             };
             line[0].color = Color::Black;
             line[1].color = Color::Black;
@@ -128,7 +131,7 @@ int main()
             text.setString(oss.str());
             text.setFillColor(Color::Black);
             text.setCharacterSize(18);
-            text.move(Vector2f(50 + 650 * i / 10 - 9, 460));
+            text.move(Vector2f(50 + (xwidth - 100) * i / 10 - 9, ywidth - 40));
             window.draw(text);
          }
       }
@@ -136,8 +139,8 @@ int main()
       {
          Vertex line[] =
          {
-            Vertex(Vector2f(45,450 - i * 40)),
-            Vertex(Vector2f(55,450 - i * 40))
+            Vertex(Vector2f(45,ywidth - 50 - i * 40)),
+            Vertex(Vector2f(55,ywidth - 50 - i * 40))
          };
          line[0].color = Color::Black;
          line[1].color = Color::Black;
@@ -149,7 +152,7 @@ int main()
          text.setString(oss.str());
          text.setFillColor(Color::Black);
          text.setCharacterSize(15);
-         text.move(Vector2f(5, 440 - i * 40));
+         text.move(Vector2f(5, ywidth - 60 - i * (ywidth - 100)/10));
          window.draw(text);
       }
       Vertex* plottrue = new Vertex[plotparameter];
@@ -157,7 +160,7 @@ int main()
       real curx = grid[0];
       for (int i = 0; i < plotparameter; i++)
       {
-         plottrue[i] = Vertex(Vector2f(50 + 650 * (curx - grid[0]) / (grid[n - 1] - grid[0]), 450 - 400 * (func(curx) - minf) / (maxf - minf)));
+         plottrue[i] = Vertex(Vector2f(50 + (xwidth - 100) * (curx - grid[0]) / (grid[n - 1] - grid[0]), (ywidth - 50) - (ywidth - 100) * (func(curx) - minf) / (maxf - minf)));
          curx += h;
          plottrue[i].color = Color::Blue;
       }
@@ -167,7 +170,7 @@ int main()
       curx = grid[0];
       for (int i = 0; i < plotparameter; i++)
       {
-         plotsplain[i] = Vertex(Vector2f(50 + 650 * (curx - grid[0]) / (grid[n - 1] - grid[0]), 450 - 400 * (getsollutionISplain(curx, n, grid, q) - minf) / (maxf - minf)));
+         plotsplain[i] = Vertex(Vector2f(50 + (xwidth - 100) * (curx - grid[0]) / (grid[n - 1] - grid[0]), (ywidth - 50) - (ywidth - 100) * (getsollutionISplain(curx, n, grid, q) - minf) / (maxf - minf)));
          curx += h;
          plotsplain[i].color = Color::Red;
       }
@@ -175,14 +178,14 @@ int main()
       {
          CircleShape point = CircleShape(2);
          point.setFillColor(Color::Black);
-         point.move(Vector2f(50 - 2 + 650 * (grid[i] - grid[0]) / (grid[n - 1] - grid[0]), 450 - 2 - 400 * (getsollutionISplain(grid[i], n, grid, q) - minf) / (maxf - minf)));
+         point.move(Vector2f(50 - 2 + (xwidth - 100) * (grid[i] - grid[0]) / (grid[n - 1] - grid[0]), (ywidth - 50) - 2 - (ywidth - 100) * (getsollutionISplain(grid[i], n, grid, q) - minf) / (maxf - minf)));
          window.draw(point);
       }
       for (int i = 0; i < m; i++)
       {
          CircleShape point = CircleShape(1);
          point.setFillColor(Color::Magenta);
-         point.move(Vector2f(50 - 1 + 650 * (x[i] - grid[0]) / (grid[n - 1] - grid[0]), 450 - 1 - 400 * (y[i] - minf) / (maxf - minf)));
+         point.move(Vector2f(50 - 1 + (xwidth - 100) * (x[i] - grid[0]) / (grid[n - 1] - grid[0]), (ywidth - 50) - 1 - (ywidth - 100) * (y[i] - minf) / (maxf - minf)));
          window.draw(point);
       }
       window.draw(plotsplain, plotparameter, LinesStrip);

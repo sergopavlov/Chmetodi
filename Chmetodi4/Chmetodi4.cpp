@@ -1,29 +1,24 @@
 #include "Chmetodi4.h";
 #include <stdio.h>
+#include <cmath>
+#include <vector>
 
+using namespace std;
+vector<real(*)(real*, int)> funcs;
 
 int main()
 {
-   int n = 3;
-   real* x = new real[n];
-   real* b = new real[n];
-   real** A = new real * [n];
-   for (int i = 0; i < n; i++)
+   int n = 2, m = 2;
+   real* x0 = new real[m];
+
+   funcs.push_back(&f1);
+   funcs.push_back(&f2);
+   for (int i = 0; i < m; i++)
    {
-      x[i] = i + 1;
-      A[i] = new real[n];
+      x0[i] = 1;
    }
-   A[0][0] = 2;
-   A[0][1] = 2;
-   A[0][2] = 4;
-   A[1][0] = 1;
-   A[1][1] = 3;
-   A[1][2] = 8;
-   A[2][0] = 2;
-   A[2][1] = 5;
-   A[2][2] = 15;
-   MatrixMult(A, x, b, n);
-   SolveSlae(A, b, n);
+   x0[0] = 100;
+   int k = Newton(n, m, x0, 1e-6, 1e-6, 10000);
    printf_s("asdasd");
 }
 
@@ -33,6 +28,7 @@ void CalculateMinusF(real* f, real* x, int n, int m)
    f[1] = -((x[0] + 2) * (x[0] + 2) + x[1] * x[1] - 9);
 }
 
+
 void CalculateJakobi(real** J, real* x, int n, int m)//m уравнений n  неизвестных n>m
 {
    J[0][0] = 2 * (x[0] - 2);
@@ -40,18 +36,76 @@ void CalculateJakobi(real** J, real* x, int n, int m)//m уравнений n  неизвестны
    J[1][0] = 2 * (x[0] + 2);
    J[1][1] = 2 * x[1];
 }
-void Newton(int n, int m, real* x0)
+
+real f1(real* x, int n)
+{
+   return (x[0] - 2) * (x[0] - 2) + x[1] * x[1] - 9;
+}
+
+real f2(real* x, int n)
+{
+   return (x[0] - 2) * (x[0] + 2) + x[1] * x[1] - 9;
+}
+
+int Newton(int n, int m, real* x0, real eps1, real eps2, int maxiter)
 {
    real** J = new real * [m];
    real* F = new real[m];
+   real* Fnext = new real[m];
+   real* xnext = new real[m];
+   real Fnormnext;
+   real Fnorm;
+   real b;
+   bool flagnotend = true;
    for (int i = 0; i < m; i++)
    {
       J[i] = new real[m];
    }
    CalculateMinusF(F, x0, n, m);
-   CalculateJakobi(J, x0, n, m);
-   SolveSlae(J)
-
+   real F0 = CalcNorm(F, m);
+   int k = 0;
+   while (flagnotend && k < maxiter)
+   {
+      CalculateMinusF(F, x0, n, m);
+      CalculateJakobi(J, x0, n, m);
+      Fnorm = CalcNorm(F, m);
+      SolveSlae(J, F, n);
+      b = 1;
+      bool flag = true;
+      while (flagnotend && flag)
+      {
+         if (b < eps1)
+            flagnotend = false;
+         for (int i = 0; i < m; i++)
+         {
+            xnext[i] = x0[i] + b * F[i];
+         }
+         CalculateMinusF(Fnext, xnext, n, m);
+         Fnormnext = CalcNorm(Fnext, m);
+         if (Fnormnext < Fnorm)
+         {
+            flag = false;
+         }
+         b /= 2;
+      }
+      for (int i = 0; i < m; i++)
+      {
+         x0[i] = xnext[i];
+      }
+      if (Fnormnext / F0 < eps2)
+         flagnotend = false;
+      k++;
+   }
+   return k;
+}
+real CalcNorm(real* x, int n)
+{
+   real summ = 0;
+   for (int i = 0; i < n; i++)
+   {
+      summ += x[i] * x[i];
+   }
+   return sqrt(summ);
 }
 
 void SolveSlae(real** A, real* b, int n)
