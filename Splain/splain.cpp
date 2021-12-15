@@ -44,7 +44,7 @@ int main()
       if (f[i] < minf)
          minf = f[i];
    }
-   SSplain(grid, q, n, x, y, m, 0, 0);
+   SSplain(grid, q, n, x, y, m, 0, 1e3);
    //ISplain(grid, f, q, n);
    Font font;
    font.loadFromFile("C:\\Windows\\Fonts\\Arial.ttf");
@@ -285,7 +285,7 @@ void SSplain(real* grid, real* q, int n, real* x, real* y, int pcount, real alph
       di[2 * i + 1] += alpha * 4.0 / h / 30;
       di[2 * i + 2] += alpha * 1.2 / h;
       di[2 * i + 3] += alpha * 4.0 / h / 30;
-      al[ia[2 * i + 1]] += alpha * 0.1 / h;
+      al[ia[2 * i + 2] - 1] += alpha * 0.1 / h;
       al[ia[2 * i + 2]] += alpha * (-1.2) / h;
       al[ia[2 * i + 2] + 1] += alpha * -0.1 / h;
       al[ia[2 * i + 3]] += alpha * 0.1 / h;
@@ -293,15 +293,15 @@ void SSplain(real* grid, real* q, int n, real* x, real* y, int pcount, real alph
       al[ia[2 * i + 3] + 2] += alpha * -0.1 / h;
 
       di[2 * i] += betta * 12.0 / (h * h * h);
-      di[2 * i + 1] += betta * 4.0 / (h * h * h);
+      di[2 * i + 1] += betta * 4.0 / (h);
       di[2 * i + 2] += betta * 12.0 / (h * h * h);
-      di[2 * i + 3] += betta * 4.0 / (h * h * h);
-      al[ia[2 * i + 1]] += betta * 6.0 / (h * h * h);
+      di[2 * i + 3] += betta * 4.0 / (h);
+      al[ia[2 * i + 2] - 1] += betta * 6.0 / (h * h);
       al[ia[2 * i + 2]] += betta * (-12.0) / (h * h * h);
-      al[ia[2 * i + 2] + 1] += betta * (-6.0) / (h * h * h);
-      al[ia[2 * i + 3]] += betta * 6.0 / (h * h * h);
-      al[ia[2 * i + 3] + 1] += betta * 2.0 / (h * h * h);
-      al[ia[2 * i + 3] + 2] += betta * (-6.0) / (h * h * h);
+      al[ia[2 * i + 2] + 1] += betta * (-6.0) / (h * h);
+      al[ia[2 * i + 3]] += betta * 6.0 / (h * h);
+      al[ia[2 * i + 3] + 1] += betta * 2.0 / (h);
+      al[ia[2 * i + 3] + 2] += betta * (-6.0) / (h * h);
    }
    MSG(ia, ja, 2 * n, al, di, q, b, 100000, 1e-15);
 }
