@@ -12,25 +12,25 @@ vector<real> vals;
 
 int main()
 {
-   int n = 2, m = 1;
+   int n = 2, m = 2;
    real* x0 = new real[n];
    funcdiffs.resize(m);
    nums1.resize(m);
    vals.resize(m);
    nums2.resize(n);
    funcs.push_back(&f1);
-   //funcs.push_back(&f2);
+   funcs.push_back(&f2);
    //funcs.push_back(&f3);
    funcdiffs[0].push_back(&f11);
    funcdiffs[0].push_back(&f12);
-   //funcdiffs[1].push_back(&f21);
-   //funcdiffs[1].push_back(&f22);
+   funcdiffs[1].push_back(&f21);
+   funcdiffs[1].push_back(&f22);
    //funcdiffs[2].push_back(&f31);
    //funcdiffs[2].push_back(&f32);
-   x0[0] = 3;
+   x0[0] = 2;
    x0[1] = 1;
 
-   int k = Newton1(n, m, x0, 1e-6, 1e-6, 10000);
+   int k = Newton2(n, m, x0, 1e-6, 1e-6, 10000);
    printf_s("asdasd");
 }
 
@@ -49,17 +49,19 @@ void CalculateMinusF2(real* f, real* x, int n, int m)
          {
             flag = false;
             int kbeg = min(i - 1, n - 2);
-            if (j != i - 1)
-            {
                for (int k = kbeg; k >= j; k--)
                {
                   f[k + 1] = f[k];
                   nums2[k + 1] = nums2[k];
                }
-            }
             f[j] = cur;
             nums2[j] = i;
          }
+      }
+      if (flag&&i<n)
+      {
+         f[i] = cur;
+         nums2[i] = i;
       }
    }
 }
@@ -111,8 +113,6 @@ int Newton1(int n, int m, real* x0, real eps1, real eps2, int maxiter)//n>m
       bool flag = true;
       while (flagnotend && flag)
       {
-         if (b < eps1)
-            flagnotend = false;
          for (int i = 0; i < n; i++)
          {
             xnext[i] = x0[i];
@@ -127,6 +127,8 @@ int Newton1(int n, int m, real* x0, real eps1, real eps2, int maxiter)//n>m
             flag = false;
          }
          b /= 2;
+         if (b < eps1)
+            flagnotend = false;
       }
       for (int i = 0; i < n; i++)
       {
@@ -328,22 +330,22 @@ void LUfactorization(int n, int* ia, real* di, real* au, real* al)
 
 real f1(real* x, int n)
 {
-   return (x[0] - 2) * (x[0] - 2) + x[1] * x[1] - 9;
-}
-
-real f3(real* x, int n)
-{
-   return (x[0] + 2) * (x[0] + 2) + x[1] * x[1] - 9;
+   return (x[0] - 4) * (x[0] - 4) + x[1] * x[1] - 25;
 }
 
 real f2(real* x, int n)
+{
+   return (x[0] + 4) * (x[0] + 4) + x[1] * x[1] - 25;
+}
+
+real f3(real* x, int n)
 {
    return x[0];
 }
 
 real f11(real* x, int n)
 {
-   return 2 * (x[0] - 2);
+   return 2 * (x[0] - 4);
 }
 
 real f12(real* x, int n)
@@ -351,22 +353,22 @@ real f12(real* x, int n)
    return 2 * x[1];
 }
 
-real f31(real* x, int n)
+real f21(real* x, int n)
 {
-   return 2 * (x[0] + 2);
+   return 2 * (x[0] + 4);
 }
 
-real f32(real* x, int n)
+real f22(real* x, int n)
 {
    return 2 * x[1];
 }
 
-real f21(real* x, int n)
+real f31(real* x, int n)
 {
    return 1;
 }
 
-real f22(real* x, int n)
+real f32(real* x, int n)
 {
    return 0;
 }
