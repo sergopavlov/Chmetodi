@@ -5,54 +5,92 @@
 
 using namespace std;
 vector<real(*)(real*, int)> funcs;
+vector<vector<real(*)(real*, int)>> funcdiffs;
+vector<int> nums1;
+vector<int> nums2;
+vector<real> vals;
 
 int main()
 {
-   int n = 2, m = 2;
-   real* x0 = new real[m];
-
+   int n = 2, m = 1;
+   real* x0 = new real[n];
+   funcdiffs.resize(m);
+   nums1.resize(m);
+   vals.resize(m);
+   nums2.resize(n);
    funcs.push_back(&f1);
-   funcs.push_back(&f2);
-   for (int i = 0; i < m; i++)
-   {
-      x0[i] = 1;
-   }
-   x0[0] = 100;
-   int k = Newton(n, m, x0, 1e-6, 1e-6, 10000);
+   //funcs.push_back(&f2);
+   //funcs.push_back(&f3);
+   funcdiffs[0].push_back(&f11);
+   funcdiffs[0].push_back(&f12);
+   //funcdiffs[1].push_back(&f21);
+   //funcdiffs[1].push_back(&f22);
+   //funcdiffs[2].push_back(&f31);
+   //funcdiffs[2].push_back(&f32);
+   x0[0] = 3;
+   x0[1] = 1;
+
+   int k = Newton1(n, m, x0, 1e-6, 1e-6, 10000);
    printf_s("asdasd");
 }
 
-void CalculateMinusF(real* f, real* x, int n, int m)
+void CalculateMinusF2(real* f, real* x, int n, int m)
 {
-   f[0] = -((x[0] - 2) * (x[0] - 2) + x[1] * x[1] - 9);
-   f[1] = -((x[0] + 2) * (x[0] + 2) + x[1] * x[1] - 9);
+   f[0] = -funcs[0](x, n);
+   nums2[0] = 0;
+   for (int i = 1; i < m; i++)
+   {
+      real cur = -funcs[i](x, n);
+      int jend = min(i, n);
+      bool flag = true;
+      for (int j = 0; j < jend && flag; j++)
+      {
+         if (abs(cur) >= abs(f[j]))
+         {
+            flag = false;
+            int kbeg = min(i - 1, n - 2);
+            if (j != i - 1)
+            {
+               for (int k = kbeg; k >= j; k--)
+               {
+                  f[k + 1] = f[k];
+                  nums2[k + 1] = nums2[k];
+               }
+            }
+            f[j] = cur;
+            nums2[j] = i;
+         }
+      }
+   }
 }
 
-
-void CalculateJakobi(real** J, real* x, int n, int m)//m уравнений n  неизвестных n>m
+real CalculateNormF(real* x, int m)
 {
-   J[0][0] = 2 * (x[0] - 2);
-   J[0][1] = 2 * x[1];
-   J[1][0] = 2 * (x[0] + 2);
-   J[1][1] = 2 * x[1];
+   real summ = 0;
+   for (int i = 0; i < m; i++)
+   {
+      summ += funcs[i](x, m) * funcs[i](x, m);
+   }
+   return sqrt(summ);
 }
 
-real f1(real* x, int n)
+void CalculateJakobi2(real** J, real* x, int n, int m)
 {
-   return (x[0] - 2) * (x[0] - 2) + x[1] * x[1] - 9;
+   for (int i = 0; i < n; i++)
+   {
+      for (int j = 0; j < n; j++)
+      {
+         J[i][j] = funcdiffs[nums2[i]][j](x, n);
+      }
+   }
 }
 
-real f2(real* x, int n)
-{
-   return (x[0] - 2) * (x[0] + 2) + x[1] * x[1] - 9;
-}
-
-int Newton(int n, int m, real* x0, real eps1, real eps2, int maxiter)
+int Newton1(int n, int m, real* x0, real eps1, real eps2, int maxiter)//n>m
 {
    real** J = new real * [m];
    real* F = new real[m];
    real* Fnext = new real[m];
-   real* xnext = new real[m];
+   real* xnext = new real[n];
    real Fnormnext;
    real Fnorm;
    real b;
@@ -61,14 +99,123 @@ int Newton(int n, int m, real* x0, real eps1, real eps2, int maxiter)
    {
       J[i] = new real[m];
    }
-   CalculateMinusF(F, x0, n, m);
-   real F0 = CalcNorm(F, m);
+   real F0 = CalculateNormF(x0, m);
    int k = 0;
    while (flagnotend && k < maxiter)
    {
-      CalculateMinusF(F, x0, n, m);
-      CalculateJakobi(J, x0, n, m);
-      Fnorm = CalcNorm(F, m);
+      CalculateJacobi1(J, x0, n, m);
+      CalculateMinusF1(F, x0, n, m);
+      Fnorm = CalculateNormF(x0, m);
+      SolveSlae(J, F, m);
+      b = 1;
+      bool flag = true;
+      while (flagnotend && flag)
+      {
+         if (b < eps1)
+            flagnotend = false;
+         for (int i = 0; i < n; i++)
+         {
+            xnext[i] = x0[i];
+         }
+         for (int i = 0; i < m; i++)
+         {
+            xnext[nums1[i]] += b * F[i];
+         }
+         Fnormnext = CalculateNormF(xnext, m);
+         if (Fnormnext < Fnorm)
+         {
+            flag = false;
+         }
+         b /= 2;
+      }
+      for (int i = 0; i < n; i++)
+      {
+         x0[i] = xnext[i];
+      }
+      if (Fnormnext / F0 < eps2)
+         flagnotend = false;
+      k++;
+   }
+   return k;
+}
+
+void CalculateJacobi1(real** J, real* x, int n, int m)
+{
+   for (int i = 0; i < m; i++)
+   {
+      J[i][0] = funcdiffs[i][0](x, n);
+      if (abs(J[i][0]) > vals[0])
+         vals[0] = abs(J[0][i]);
+   }
+   nums1[0] = 0;
+   for (int i = 1; i < n; i++)
+   {
+      real curval = 0;
+      real* cur = new real[m];
+      for (int j = 0; j < m; j++)
+      {
+         cur[j] = funcdiffs[j][i](x, n);
+         if (abs(cur[i]) > curval)
+            curval = abs(cur[i]);
+      }
+      int jend = min(i, n);
+      bool flag = true;
+      for (int j = 0; j < i; j++)
+      {
+         if (curval >= vals[j])
+         {
+            flag = false;
+            int kbeg = min(i - 1, m - 2);
+            if (j != i - 1)
+            {
+               for (int k = kbeg; k >= j; k--)
+               {
+                  for (int p = 0; p < m; p++)
+                  {
+                     J[k + 1][p] = J[k][p];
+                  }
+                  nums1[k + 1] = nums1[k];
+               }
+            }
+            for (int p = 0; p < m; p++)
+            {
+               J[j][p] = cur[p];
+               nums1[j] = i;
+            }
+         }
+      }
+   }
+}
+
+void CalculateMinusF1(real* f, real* x, int n, int m)
+{
+   for (int i = 0; i < m; i++)
+   {
+      f[i] = -funcs[i](x, n);
+   }
+}
+
+int Newton2(int n, int m, real* x0, real eps1, real eps2, int maxiter)//m уравнений n  неизвестных n<m
+{
+   real** J = new real * [n];
+   real* F = new real[n];
+   real* Fnext = new real[n];
+   real* xnext = new real[n];
+   real Fnormnext;
+   real Fnorm;
+   real b;
+   bool flagnotend = true;
+   for (int i = 0; i < n; i++)
+   {
+      J[i] = new real[n];
+   }
+   real F0 = CalculateNormF(x0, m);
+   int k = 0;
+   while (flagnotend && k < maxiter)
+   {
+      CalculateMinusF2(F, x0, n, m);
+      CalculateJakobi2(J, x0, n, m);
+      Fnorm = CalculateNormF(x0, m);
       SolveSlae(J, F, n);
       b = 1;
       bool flag = true;
@@ -76,12 +223,11 @@ int Newton(int n, int m, real* x0, real eps1, real eps2, int maxiter)
       {
          if (b < eps1)
             flagnotend = false;
-         for (int i = 0; i < m; i++)
+         for (int i = 0; i < n; i++)
          {
             xnext[i] = x0[i] + b * F[i];
          }
-         CalculateMinusF(Fnext, xnext, n, m);
-         Fnormnext = CalcNorm(Fnext, m);
+         Fnormnext = CalculateNormF(xnext, m);
          if (Fnormnext < Fnorm)
          {
             flag = false;
@@ -97,15 +243,6 @@ int Newton(int n, int m, real* x0, real eps1, real eps2, int maxiter)
       k++;
    }
    return k;
-}
-real CalcNorm(real* x, int n)
-{
-   real summ = 0;
-   for (int i = 0; i < n; i++)
-   {
-      summ += x[i] * x[i];
-   }
-   return sqrt(summ);
 }
 
 void SolveSlae(real** A, real* b, int n)
@@ -187,4 +324,49 @@ void LUfactorization(int n, int* ia, real* di, real* au, real* al)
       }
       di[i] -= sumrow;
    }
+}
+
+real f1(real* x, int n)
+{
+   return (x[0] - 2) * (x[0] - 2) + x[1] * x[1] - 9;
+}
+
+real f3(real* x, int n)
+{
+   return (x[0] + 2) * (x[0] + 2) + x[1] * x[1] - 9;
+}
+
+real f2(real* x, int n)
+{
+   return x[0];
+}
+
+real f11(real* x, int n)
+{
+   return 2 * (x[0] - 2);
+}
+
+real f12(real* x, int n)
+{
+   return 2 * x[1];
+}
+
+real f31(real* x, int n)
+{
+   return 2 * (x[0] + 2);
+}
+
+real f32(real* x, int n)
+{
+   return 2 * x[1];
+}
+
+real f21(real* x, int n)
+{
+   return 1;
+}
+
+real f22(real* x, int n)
+{
+   return 0;
 }
