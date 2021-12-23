@@ -54,7 +54,7 @@ real line31_1(real* x, int n);
 
 real line31_2(real* x, int n);
 
-real line32_1(real* x, int n);
+real f3(real* x, int n);
 
 real line32_2(real* x, int n);
 
@@ -65,6 +65,8 @@ real line33_2(real* x, int n);
 real sinus_1(real* x, int n);
 
 real sinus_2(real* x, int n);
+
+void CalculateJacobinum2(real** J, real* x, int n, int m);
 
 void CalculateJacobinum2(real** J, real* x, int n, int m);
 
