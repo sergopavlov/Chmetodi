@@ -142,6 +142,12 @@ real GetMinEugenvalue(int n, int* ia, real* di, real* au, real* al)
    {
       x[i] = 1;
    }
+   x[0] =368 ;
+   x[1] =45 ;
+   x[2] = 460;
+   x[3] = 330;
+   maxiter = 2;
+
    real maxdeltalambda = 1;
    int k = 0;
    while (maxdeltalambda > eps && k < maxiter)
