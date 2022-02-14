@@ -142,11 +142,14 @@
     <ClCompile Include="umf1.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="dims.txt" />
+    <Text Include="BC.txt" />
     <Text Include="grid.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="umf1.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="схума умф1.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

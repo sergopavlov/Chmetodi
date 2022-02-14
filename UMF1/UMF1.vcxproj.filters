@@ -26,7 +26,7 @@
     <Text Include="grid.txt">
       <Filter>Txt</Filter>
     </Text>
-    <Text Include="dims.txt">
+    <Text Include="BC.txt">
       <Filter>Txt</Filter>
     </Text>
   </ItemGroup>
@@ -34,5 +34,10 @@
     <ClInclude Include="umf1.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="схума умф1.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
   </ItemGroup>
 </Project>
