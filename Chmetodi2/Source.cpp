@@ -68,13 +68,13 @@ void JacobiIterationRelax(int n, int m, real** mat, real* b, real* x0, real* x, 
    }
 }
 
-void BlockRelaxIteration(int n, int m, int p, real** mat, real* b, real* x0, real* x, real omega)
+/*void BlockRelaxIteration(int n, int m, int p, real** mat, real* b, real* x0, real* x, real omega)
 {
    if (n % p == 0)
    {
 
    }
-}
+}*/
 
 void MatrixMult(int n, int m, real** mat, real* x, real* b)//Ax=b
 {

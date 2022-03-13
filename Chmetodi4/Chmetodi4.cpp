@@ -223,7 +223,7 @@ int main()
    Vertex sinplot[1000];
    for (int i = 0; i < 1000; i++)
    {
-      sinplot[i] = Vertex(Vector2f(width / 2.0 + (-10 + 20.0 / 1000 * i) * (width - 100) / 22.0, height / 2.0 - (sin(-10 + 20.0 / 1000 * i)+2) * (height - 100) / 16.0));
+      sinplot[i] = Vertex(Vector2f(width / 2.0 + (-10 + 20.0 / 1000 * i) * (width - 100) / 22.0, height / 2.0 - (sin(-10 + 20.0 / 1000 * i) + 2) * (height - 100) / 16.0));
       sinplot[i].color = Color::Blue;
    }
    while (window.isOpen())
@@ -349,67 +349,67 @@ void CalculateJacobinum2(real** J, real* x, int n, int m)
 
 void CalculateJacobinum2(real** J, real* x, int n, int m)
 {
-	for (int i = 0; i < n; i++)
-	{
-		for (int j = 0; j < n; j++)
-		{
-			J[i][j] = (funcs[nums2[i]](x, n, j, h) - funcs[nums2[i]](x, n, j, -h)) / (2 * h);
-		}
-	}
+   for (int i = 0; i < n; i++)
+   {
+      for (int j = 0; j < n; j++)
+      {
+         J[i][j] = (funcs[nums2[i]](x, n, j, h) - funcs[nums2[i]](x, n, j, -h)) / (2 * h);
+      }
+   }
 }
 
 int Newton1(int n, int m, real* x0, real eps1, real eps2, int maxiter)//n>m
 {
-	real** J = new real * [m];
-	real* F = new real[m];
-	real* Fnext = new real[m];
-	real* xnext = new real[n];
-	real Fnormnext;
-	real Fnorm;
-	real b;
-	bool flagnotend = true;
-	for (int i = 0; i < m; i++)
-	{
-		J[i] = new real[m];
-	}
-	real F0 = CalculateNormF(x0, m);
-	int k = 0;
-	while (flagnotend && k < maxiter)
-	{
-		CalculateJacobi1(J, x0, n, m);
-		CalculateMinusF1(F, x0, n, m);
-		Fnorm = CalculateNormF(x0, m);
-		SolveSlae(J, F, m);
-		b = 1;
-		bool flag = true;
-		while (flagnotend && flag)
-		{
-			if (b < eps1)
-				flagnotend = false;
-			for (int i = 0; i < n; i++)
-			{
-				xnext[i] = x0[i];
-			}
-			for (int i = 0; i < m; i++)
-			{
-				xnext[nums1[i]] += b * F[i];
-			}
-			Fnormnext = CalculateNormF(xnext, m);
-			if (Fnormnext < Fnorm)
-			{
-				flag = false;
-			}
-			b /= 2;
-		}
-		for (int i = 0; i < n; i++)
-		{
-			x0[i] = xnext[i];
-		}
-		if (Fnormnext / F0 < eps2)
-			flagnotend = false;
-		k++;
-	}
-	return k;
+   real** J = new real * [m];
+   real* F = new real[m];
+   real* Fnext = new real[m];
+   real* xnext = new real[n];
+   real Fnormnext;
+   real Fnorm;
+   real b;
+   bool flagnotend = true;
+   for (int i = 0; i < m; i++)
+   {
+      J[i] = new real[m];
+   }
+   real F0 = CalculateNormF(x0, m);
+   int k = 0;
+   while (flagnotend && k < maxiter)
+   {
+      CalculateJacobi1(J, x0, n, m);
+      CalculateMinusF1(F, x0, n, m);
+      Fnorm = CalculateNormF(x0, m);
+      SolveSlae(J, F, m);
+      b = 1;
+      bool flag = true;
+      while (flagnotend && flag)
+      {
+         if (b < eps1)
+            flagnotend = false;
+         for (int i = 0; i < n; i++)
+         {
+            xnext[i] = x0[i];
+         }
+         for (int i = 0; i < m; i++)
+         {
+            xnext[nums1[i]] += b * F[i];
+         }
+         Fnormnext = CalculateNormF(xnext, m);
+         if (Fnormnext < Fnorm)
+         {
+            flag = false;
+         }
+         b /= 2;
+      }
+      for (int i = 0; i < n; i++)
+      {
+         x0[i] = xnext[i];
+      }
+      if (Fnormnext / F0 < eps2)
+         flagnotend = false;
+      k++;
+   }
+   return k;
 }
 
 void CalculateJacobi1(real** J, real* x, int n, int m)
@@ -543,65 +543,65 @@ int Newton2(int n, int m, real* x0, real eps1, real eps2, int maxiter)//m уравне
 
 void SolveSlae(real** A, real* b, int n)
 {
-	for (int i = 0; i < n; i++)
-	{
-		real summd = 0;
-		for (int j = 0; j < i; j++)
-		{
-			real summl = 0;
-			real summu = 0;
-			for (int k = 0; k < j; k++)
-			{
-				summl += A[i][k] * A[k][j];
-				summu += A[j][k] * A[k][i];
-			}
-			A[i][j] -= summl;
-			A[j][i] = (A[j][i] - summu) / A[j][j];
-			summd += A[i][j] * A[j][i];
-		}
-		A[i][i] -= summd;
-	}
-	for (int i = 0; i < n; i++)
-	{
-		real summ = 0;
-		for (int j = 0; j < i; j++)
-		{
-			summ += A[i][j] * b[j];
-		}
-		b[i] = (b[i] - summ) / A[i][i];
-	}
-	for (int i = n - 1; i >= 0; i--)
-	{
-		real summ = 0;
-		for (int j = n - 1; j > i; j--)
-		{
-			summ += A[i][j] * b[j];
-		}
-		b[i] -= summ;
-	}
+   for (int i = 0; i < n; i++)
+   {
+      real summd = 0;
+      for (int j = 0; j < i; j++)
+      {
+         real summl = 0;
+         real summu = 0;
+         for (int k = 0; k < j; k++)
+         {
+            summl += A[i][k] * A[k][j];
+            summu += A[j][k] * A[k][i];
+         }
+         A[i][j] -= summl;
+         A[j][i] = (A[j][i] - summu) / A[j][j];
+         summd += A[i][j] * A[j][i];
+      }
+      A[i][i] -= summd;
+   }
+   for (int i = 0; i < n; i++)
+   {
+      real summ = 0;
+      for (int j = 0; j < i; j++)
+      {
+         summ += A[i][j] * b[j];
+      }
+      b[i] = (b[i] - summ) / A[i][i];
+   }
+   for (int i = n - 1; i >= 0; i--)
+   {
+      real summ = 0;
+      for (int j = n - 1; j > i; j--)
+      {
+         summ += A[i][j] * b[j];
+      }
+      b[i] -= summ;
+   }
 }
 void MatrixMult(real** A, real* x, real* b, int n)
 {
-	for (int i = 0; i < n; i++)
-	{
-		b[i] = 0;
-		for (int j = 0; j < n; j++)
-		{
-			b[i] += A[i][j] * x[j];
-		}
-	}
+   for (int i = 0; i < n; i++)
+   {
+      b[i] = 0;
+      for (int j = 0; j < n; j++)
+      {
+         b[i] += A[i][j] * x[j];
+      }
+   }
 }
 void LUfactorization(int n, int* ia, real* di, real* au, real* al)
 {
-	for (int i = 0; i < n; i++)
-	{
-		real sumrow = 0;
-		int j0 = i - (ia[i + 1] - ia[i]);
-		int dind = j0;
-		for (int ii = ia[i]; ii < ia[i + 1]; ii++, dind++)
-		{
-			int j = j0 + ii - ia[i];
-			int j0j = j - (ia[j + 1] - ia[j]);
+   for (int i = 0; i < n; i++)
+   {
+      real sumrow = 0;
+      int j0 = i - (ia[i + 1] - ia[i]);
+      int dind = j0;
+      for (int ii = ia[i]; ii < ia[i + 1]; ii++, dind++)
+      {
+         int j = j0 + ii - ia[i];
+         int j0j = j - (ia[j + 1] - ia[j]);
 
          int kbeg = j0 > j0j ? j0 : j0j;
          int kend = i > j ? j : i;
@@ -780,11 +780,11 @@ real sinus(real* x, int n, int j, real h)
 {
    real res;
    if (j == -1)
-      res = x[1] - sin(x[0])-2;
+      res = x[1] - sin(x[0]) - 2;
    else
    {
       x[j] += h;
-      res = x[1] - sin(x[0])-2;
+      res = x[1] - sin(x[0]) - 2;
       x[j] -= h;
    }
    return res;
@@ -812,22 +812,22 @@ real cir12_2(real* x, int n)
 
 real cir21_1(real* x, int n)
 {
-	return 2 * (x[0] - 4);
+   return 2 * (x[0] - 4);
 }
 
 real cir21_2(real* x, int n)
 {
-	return 2 * x[1];
+   return 2 * x[1];
 }
 
 real cir22_1(real* x, int n)
 {
-	return 2 * (x[0] + 4);
+   return 2 * (x[0] + 4);
 }
 
 real cir22_2(real* x, int n)
 {
-	return 2 * x[1];
+   return 2 * x[1];
 }
 
 real line3_1(real* x, int n)
@@ -852,7 +852,7 @@ real line2_2(real* x, int n)
 
 real line31_1(real* x, int n)
 {
-	return 1;
+   return 1;
 }
 
 real line31_2(real* x, int n)
