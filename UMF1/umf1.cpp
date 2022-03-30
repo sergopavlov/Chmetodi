@@ -6,7 +6,7 @@
 //Область имеет Т-образную форму. Предусмотреть учет первых и вторых краевых условий. 
 real func(real x, real y)
 {
-   return 0;
+   return -12*x*x;
 }
 
 int main()
@@ -449,11 +449,11 @@ int main()
                }
                else
                {
-                  mat[0][index] = -lambda / hy1 / (hy1 + hy0);
-                  mat[1][index] = -lambda / hx1 / (hx1 + hx0);
-                  mat[2][index] = lambda * (1.0 / hx1 / hx0 + 1.0 / hy1 / hy0) + gamma;
-                  mat[3][index] = -lambda / (hx0) / (hx1 + hx0);
-                  mat[4][index] = -lambda / (hy0) / (hy1 + hy0);
+                  mat[0][index] = -lambda*2 / hy1 / (hy1 + hy0);
+                  mat[1][index] = -lambda*2 / hx1 / (hx1 + hx0);
+                  mat[2][index] = lambda *2* (1.0 / hx1 / hx0 + 1.0 / hy1 / hy0) + gamma;
+                  mat[3][index] = -lambda *2/ (hx0) / (hx1 + hx0);
+                  mat[4][index] = -lambda *2/ (hy0) / (hy1 + hy0);
                   b[index] = func(x, y);
                }
                y += hy1;
@@ -730,11 +730,11 @@ int main()
    x = xgrid[1] + hx0;
    for (int i = 1; i < xsplitcount[1]; i++)
    {
-      mat[0][index] = -lambda / hy1 / (hy1 + hy0);
-      mat[1][index] = -lambda / hx1 / (hx1 + hx0);
-      mat[2][index] = lambda * (1.0 / hx1 / hx0 + 1.0 / hy1 / hy0) + gamma;
-      mat[3][index] = -lambda / (hx0) / (hx1 + hx0);
-      mat[4][index] = -lambda / (hy0) / (hy1 + hy0);
+      mat[0][index] = -lambda*2 / hy1 / (hy1 + hy0);
+      mat[1][index] = -lambda*2 / hx1 / (hx1 + hx0);
+      mat[2][index] = lambda *2* (1.0 / hx1 / hx0 + 1.0 / hy1 / hy0) + gamma;
+      mat[3][index] = -lambda *2/ (hx0) / (hx1 + hx0);
+      mat[4][index] = -lambda *2/ (hy0) / (hy1 + hy0);
       b[index] = func(x, y);
       x += hx1;
       hx0 = hx1;
@@ -751,11 +751,11 @@ int main()
    x = xgrid[1];
    for (int i = 1; i < ysplitcount[1]; i++)
    {
-      mat[0][index] = -lambda / hy1 / (hy1 + hy0);
-      mat[1][index] = -lambda / hx1 / (hx1 + hx0);
-      mat[2][index] = lambda * (1.0 / hx1 / hx0 + 1.0 / hy1 / hy0) + gamma;
-      mat[3][index] = -lambda / (hx0) / (hx1 + hx0);
-      mat[4][index] = -lambda / (hy0) / (hy1 + hy0);
+      mat[0][index] = -lambda *2/ hy1 / (hy1 + hy0);
+      mat[1][index] = -lambda *2/ hx1 / (hx1 + hx0);
+      mat[2][index] = lambda *2* (1.0 / hx1 / hx0 + 1.0 / hy1 / hy0) + gamma;
+      mat[3][index] = -lambda *2/ (hx0) / (hx1 + hx0);
+      mat[4][index] = -lambda *2/ (hy0) / (hy1 + hy0);
       b[index] = func(x, y);
       y += hy1;
       hy0 = hy1;
@@ -772,11 +772,11 @@ int main()
    x = xgrid[2];
    for (int i = 1; i < ysplitcount[1]; i++)
    {
-      mat[0][index] = -lambda / hy1 / (hy1 + hy0);
-      mat[1][index] = -lambda / hx1 / (hx1 + hx0);
-      mat[2][index] = lambda * (1.0 / hx1 / hx0 + 1.0 / hy1 / hy0) + gamma;
-      mat[3][index] = -lambda / (hx0) / (hx1 + hx0);
-      mat[4][index] = -lambda / (hy0) / (hy1 + hy0);
+      mat[0][index] = -lambda *2/ hy1 / (hy1 + hy0);
+      mat[1][index] = -lambda *2/ hx1 / (hx1 + hx0);
+      mat[2][index] = lambda *2* (1.0 / hx1 / hx0 + 1.0 / hy1 / hy0) + gamma;
+      mat[3][index] = -lambda *2/ (hx0) / (hx1 + hx0);
+      mat[4][index] = -lambda *2/ (hy0) / (hy1 + hy0);
       b[index] = func(x, y);
       y += hy1;
       hy0 = hy1;
@@ -786,11 +786,16 @@ int main()
 
 
 
-   real omega = 1.1;
+   real omega = 0.9;
    real precision = 1e-7;
-   int maxiter = 1000000;
+   int maxiter = 100000;
    int k = SolveZeidelRelax(n, m, precision, maxiter, mat, b, x0, omega);
-   printf_s("sosi trak");
+   index = ysplitcount[0] * m+m;
+   for (int i = 0; i < m; i+=2)
+   {
+       printf_s("%f ", x0[index + i]);
+   }
+       printf_s("sosi trak");
 }
 
 void JacobiIterationRelax(int n, int m, real** mat, real* b, real* x0, real* x, real omega)
