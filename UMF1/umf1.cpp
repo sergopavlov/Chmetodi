@@ -1,17 +1,50 @@
-#include "..\Chmetodi2\Source.h"
 #include<stdio.h>
 #include "umf1.h"
-#include <vector>
-#include <set>
-//ќбласть имеет “-образную форму. ѕредусмотреть учет первых и вторых краевых условий. 
+#include <math.h>
+//ќбласть имеет “-образную форму. ѕредусмотреть учет первых и третьих краевых условий. 
 real func(real x, real y)
 {
-   return -12*x*x;
+   return -2 + x * x;
 }
-
+//u=x^4
+//f= -12x^2+x^4
+real BC(real x, real y, int edge)//краевые услови€
+{
+   real res = 0;
+   switch (edge)
+   {
+   case 0:
+      res = x * x;
+      break;
+   case 1:
+      res = x * x;
+      break;
+   case 2:
+      res = x * x;
+      break;
+   case 3:
+      res = x * x;
+      break;
+   case 4:
+      res = x * x;
+      break;
+   case 5:
+      res = x * x;
+      break;
+   case 6:
+      res = x * x;
+      break;
+   case 7:
+      res = x * x;
+      break;
+   default:
+      break;
+   }
+   return res;
+}
 int main()
 {
-   real lambda, gamma;
+   real lambda, gamma, betta;
    FILE* file;
    fopen_s(&file, "grid.txt", "r");
    real* xgrid = new real[4];
@@ -46,14 +79,14 @@ int main()
    }
    fscanf_s(file, "%f", &lambda);
    fscanf_s(file, "%f", &gamma);
+   fscanf_s(file, "%f", &betta);
    fclose(file);
 
    fopen_s(&file, "BC.txt", "r");
    int* bctype = new int[8];
-   real* bcvalue = new  real[8];
    for (int i = 0; i < 8; i++)
    {
-      fscanf_s(file, "%d %f", &(bctype[i]), &(bcvalue[i]));
+      fscanf_s(file, "%d", &(bctype[i]));
    }
    fclose(file);
    int vertsx = 1;
@@ -77,12 +110,12 @@ int main()
    {
       mat[i] = new real[n];
    }
-   real* x0 = new real[n];
+   real* x0 = new real[n];//вектор решени€
    for (int i = 0; i < n; i++)
    {
       x0[i] = 0;
    }
-   real dx[3];
+   real dx[3];//длинна первого отрезка в сегменте
    real dy[2];
    for (int i = 0; i < 3; i++)
    {
@@ -99,6 +132,8 @@ int main()
       else
          dy[i] = (ygrid[i + 1] - ygrid[i]) * (1 - ycoef[i]) / (1 - quickpower(ycoef[i], ysplitcount[i]));
    }
+   real x;
+   real y;
 
    //нижний р€д точек
    int index = 0;
@@ -117,7 +152,7 @@ int main()
       mat[2][index] = 1;
       mat[3][index] = 0;
       mat[4][index] = 0;
-      b[index] = bcvalue[0];
+      b[index] = BC(xgrid[1], ygrid[0], 0);
    }
    else
    {
@@ -128,17 +163,17 @@ int main()
          mat[2][index] = 1;
          mat[3][index] = 0;
          mat[4][index] = 0;
-         b[index] = bcvalue[1];
+         b[index] = BC(xgrid[1], ygrid[0], 1);
       }
       else
       {
          hx1 = dx[1];
          mat[0][index] = 0;
          mat[1][index] = -lambda / hx1;
-         mat[2][index] = lambda / hx1;
+         mat[2][index] = lambda / hx1 + betta;
          mat[3][index] = 0;
          mat[4][index] = 0;
-         b[index] = bcvalue[1];
+         b[index] = BC(xgrid[1], ygrid[0], 1) * betta;
       }
    }
    index += xsplitcount[1];
@@ -150,7 +185,7 @@ int main()
       mat[2][index] = 1;
       mat[3][index] = 0;
       mat[4][index] = 0;
-      b[index] = bcvalue[0];
+      b[index] = BC(xgrid[2], ygrid[0], 0);
    }
    else
    {
@@ -161,16 +196,16 @@ int main()
          mat[2][index] = 1;
          mat[3][index] = 0;
          mat[4][index] = 0;
-         b[index] = bcvalue[2];
+         b[index] = BC(xgrid[2], ygrid[0], 2);
       }
       else
       {
          mat[0][index] = 0;
          mat[1][index] = 0;
-         mat[2][index] = lambda / hx1;
+         mat[2][index] = lambda / hx1 + betta;
          mat[3][index] = -lambda / hx1;
          mat[4][index] = 0;
-         b[index] = bcvalue[2];
+         b[index] = BC(xgrid[2], ygrid[0], 2) * betta;
       }
    }
    index += xsplitcount[2];
@@ -190,7 +225,7 @@ int main()
       mat[2][index] = 1;
       mat[3][index] = 0;
       mat[4][index] = 0;
-      b[index] = bcvalue[4];
+      b[index] = BC(xgrid[0], ygrid[1], 4);
    }
    else
    {
@@ -201,16 +236,16 @@ int main()
          mat[2][index] = 1;
          mat[3][index] = 0;
          mat[4][index] = 0;
-         b[index] = bcvalue[3];
+         b[index] = BC(xgrid[0], ygrid[1], 3);
       }
       else
       {
          mat[0][index] = 0;
          mat[1][index] = -lambda / hx1;
-         mat[2][index] = lambda / hx1;
+         mat[2][index] = lambda / hx1 + betta;
          mat[3][index] = 0;
          mat[4][index] = 0;
-         b[index] = bcvalue[4];
+         b[index] = BC(xgrid[0], ygrid[1], 4) * betta;
       }
    }
    index += xsplitcount[0];
@@ -222,7 +257,7 @@ int main()
       mat[2][index] = 1;
       mat[3][index] = 0;
       mat[4][index] = 0;
-      b[index] = bcvalue[3];
+      b[index] = BC(xgrid[1], ygrid[1], 3);
    }
    else
    {
@@ -233,16 +268,16 @@ int main()
          mat[2][index] = 1;
          mat[3][index] = 0;
          mat[4][index] = 0;
-         b[index] = bcvalue[1];
+         b[index] = BC(xgrid[1], ygrid[1], 1);
       }
       else
       {
          mat[0][index] = 0;
          mat[1][index] = -lambda / hx1;
-         mat[2][index] = lambda / hx1;
+         mat[2][index] = lambda / hx1 + betta;
          mat[3][index] = 0;
          mat[4][index] = 0;
-         b[index] = bcvalue[1];
+         b[index] = BC(xgrid[1], ygrid[1], 1) * betta;
       }
    }
    index += xsplitcount[1];
@@ -254,7 +289,7 @@ int main()
       mat[2][index] = 1;
       mat[3][index] = 0;
       mat[4][index] = 0;
-      b[index] = bcvalue[2];
+      b[index] = BC(xgrid[2], ygrid[1], 2);
    }
    else
    {
@@ -265,16 +300,16 @@ int main()
          mat[2][index] = 1;
          mat[3][index] = 0;
          mat[4][index] = 0;
-         b[index] = bcvalue[7];
+         b[index] = BC(xgrid[2], ygrid[1], 7);
       }
       else
       {
          mat[0][index] = 0;
          mat[1][index] = 0;
-         mat[2][index] = lambda / hx1;
+         mat[2][index] = lambda / hx1 + betta;
          mat[3][index] = -lambda / hx1;
          mat[4][index] = 0;
-         b[index] = bcvalue[2];
+         b[index] = BC(xgrid[2], ygrid[1], 2) * betta;
       }
    }
    hy1 = dy[1];
@@ -286,7 +321,7 @@ int main()
       mat[2][index] = 1;
       mat[3][index] = 0;
       mat[4][index] = 0;
-      b[index] = bcvalue[6];
+      b[index] = BC(xgrid[3], ygrid[1], 6);
    }
    else
    {
@@ -297,16 +332,16 @@ int main()
          mat[2][index] = 1;
          mat[3][index] = 0;
          mat[4][index] = 0;
-         b[index] = bcvalue[7];
+         b[index] = BC(xgrid[3], ygrid[1], 7);
       }
       else
       {
          mat[0][index] = -lambda / hy1;
          mat[1][index] = 0;
-         mat[2][index] = lambda / hy1;
+         mat[2][index] = lambda / hy1 + betta;
          mat[3][index] = 0;
          mat[4][index] = 0;
-         b[index] = bcvalue[7];
+         b[index] = BC(xgrid[3], ygrid[1], 7) * betta;
       }
    }
    //заполн€ем верхние точки
@@ -319,7 +354,7 @@ int main()
       mat[2][index] = 1;
       mat[3][index] = 0;
       mat[4][index] = 0;
-      b[index] = bcvalue[4];
+      b[index] = BC(xgrid[0], ygrid[2], 4);
    }
    else
    {
@@ -330,16 +365,16 @@ int main()
          mat[2][index] = 1;
          mat[3][index] = 0;
          mat[4][index] = 0;
-         b[index] = bcvalue[5];
+         b[index] = BC(xgrid[0], ygrid[2], 5);
       }
       else
       {
          mat[0][index] = 0;
          mat[1][index] = 0;
-         mat[2][index] = lambda / hy1;
+         mat[2][index] = lambda / hy1 + betta;
          mat[3][index] = 0;
          mat[4][index] = -lambda / hy1;
-         b[index] = bcvalue[5];
+         b[index] = BC(xgrid[0], ygrid[2], 5) * betta;
       }
    }
    index += xsplitcount[0];
@@ -350,16 +385,16 @@ int main()
       mat[2][index] = 1;
       mat[3][index] = 0;
       mat[4][index] = 0;
-      b[index] = bcvalue[5];
+      b[index] = BC(xgrid[1], ygrid[2], 5);
    }
    else
    {
       mat[0][index] = 0;
       mat[1][index] = 0;
-      mat[2][index] = lambda / hy1;
+      mat[2][index] = lambda / hy1 + betta;
       mat[3][index] = 0;
       mat[4][index] = -lambda / hy1;
-      b[index] = bcvalue[5];
+      b[index] = BC(xgrid[1], ygrid[2], 5) * betta;
    }
    index += xsplitcount[1];
    if (bctype[5] == 1)
@@ -369,16 +404,16 @@ int main()
       mat[2][index] = 1;
       mat[3][index] = 0;
       mat[4][index] = 0;
-      b[index] = bcvalue[5];
+      b[index] = BC(xgrid[2], ygrid[2], 5);
    }
    else
    {
       mat[0][index] = 0;
       mat[1][index] = 0;
-      mat[2][index] = lambda / hy1;
+      mat[2][index] = lambda / hy1 + betta;
       mat[3][index] = 0;
       mat[4][index] = -lambda / hy1;
-      b[index] = bcvalue[5];
+      b[index] = BC(xgrid[2], ygrid[2], 5) * betta;
    }
    index += xsplitcount[2];
    if (bctype[6] == 1)
@@ -388,7 +423,7 @@ int main()
       mat[2][index] = 1;
       mat[3][index] = 0;
       mat[4][index] = 0;
-      b[index] = bcvalue[6];
+      b[index] = BC(xgrid[3], ygrid[2], 6);
    }
    else
    {
@@ -399,20 +434,18 @@ int main()
          mat[2][index] = 1;
          mat[3][index] = 0;
          mat[4][index] = 0;
-         b[index] = bcvalue[5];
+         b[index] = BC(xgrid[3], ygrid[2], 5);
       }
       else
       {
          mat[0][index] = 0;
          mat[1][index] = 0;
-         mat[2][index] = lambda / hy1;
+         mat[2][index] = lambda / hy1 + betta;
          mat[3][index] = 0;
          mat[4][index] = -lambda / hy1;
-         b[index] = bcvalue[5];
+         b[index] = BC(xgrid[3], ygrid[2], 5) * betta;
       }
    }
-   real x;
-   real y;
    //заполн€ем внутренние точки
    for (int i = 0; i < 3; i++)
    {
@@ -449,11 +482,11 @@ int main()
                }
                else
                {
-                  mat[0][index] = -lambda*2 / hy1 / (hy1 + hy0);
-                  mat[1][index] = -lambda*2 / hx1 / (hx1 + hx0);
-                  mat[2][index] = lambda *2* (1.0 / hx1 / hx0 + 1.0 / hy1 / hy0) + gamma;
-                  mat[3][index] = -lambda *2/ (hx0) / (hx1 + hx0);
-                  mat[4][index] = -lambda *2/ (hy0) / (hy1 + hy0);
+                  mat[0][index] = -lambda * 2 / hy1 / (hy1 + hy0);
+                  mat[1][index] = -lambda * 2 / hx1 / (hx1 + hx0);
+                  mat[2][index] = lambda * 2 * (1.0 / hx1 / hx0 + 1.0 / hy1 / hy0) + gamma;
+                  mat[3][index] = -lambda * 2 / (hx0) / (hx1 + hx0);
+                  mat[4][index] = -lambda * 2 / (hy0) / (hy1 + hy0);
                   b[index] = func(x, y);
                }
                y += hy1;
@@ -515,6 +548,8 @@ int main()
    //краевые услови€
    index = xsplitcount[0] + m;
    hx1 = dx[1];
+   y = ygrid[0] + dy[0];
+   hy1 = dy[0] * ycoef[0];
    for (int i = 1; i < ysplitcount[0]; i++)
    {
       if (bctype[1] == 1)
@@ -524,22 +559,26 @@ int main()
          mat[2][index] = 1;
          mat[3][index] = 0;
          mat[4][index] = 0;
-         b[index] = bcvalue[1];
+         b[index] = BC(xgrid[1], y, 1);
 
       }
       else
       {
          mat[0][index] = 0;
          mat[1][index] = -lambda / hx1;
-         mat[2][index] = lambda / hx1;
+         mat[2][index] = lambda / hx1 + betta;
          mat[3][index] = 0;
          mat[4][index] = 0;
-         b[index] = bcvalue[1];
+         b[index] = BC(x, ygrid[0], 1) * betta;
       }
       index += m;
+      y += hy1;
+      hy1 *= ycoef[0];
    }
    index = xsplitcount[0] + xsplitcount[1] + m;
    hx0 = dx[1] * quickpower(xcoef[1], xsplitcount[1] - 1);
+   y = ygrid[0] + dy[0];
+   hy1 = dy[0] * ycoef[0];
    for (int i = 1; i < ysplitcount[0]; i++)
    {
       if (bctype[2] == 1)
@@ -549,23 +588,27 @@ int main()
          mat[2][index] = 1;
          mat[3][index] = 0;
          mat[4][index] = 0;
-         b[index] = bcvalue[2];
+         b[index] = BC(xgrid[2], y, 2);
 
       }
       else
       {
          mat[0][index] = 0;
          mat[1][index] = 0;
-         mat[2][index] = lambda / hx0;
+         mat[2][index] = lambda / hx0 + betta;
          mat[3][index] = -lambda / hx0;
          mat[4][index] = 0;
-         b[index] = bcvalue[2];
+         b[index] = BC(xgrid[2], y, 2) * betta;
       }
       index += m;
+      y += hy1;
+      hy1 *= ycoef[0];
    }
 
    index = xsplitcount[0] + 1;
    hy1 = dy[0];
+   x = xgrid[1] + dx[1];
+   hx1 = dx[1] * xcoef[1];
    for (int i = 1; i < xsplitcount[1]; i++)
    {
       if (bctype[0] == 1)
@@ -575,23 +618,27 @@ int main()
          mat[2][index] = 1;
          mat[3][index] = 0;
          mat[4][index] = 0;
-         b[index] = bcvalue[0];
+         b[index] = BC(x, ygrid[0], 0);
 
       }
       else
       {
          mat[0][index] = -lambda / hy1;
          mat[1][index] = 0;
-         mat[2][index] = lambda / hy1;
+         mat[2][index] = lambda / hy1 + betta;
          mat[3][index] = 0;
          mat[4][index] = 0;
-         b[index] = bcvalue[0];
+         b[index] = BC(x, ygrid[0], 0) * betta;
       }
       index += 1;
+      x += hx1;
+      hx1 *= xcoef[1];
    }
 
    index = ysplitcount[0] * m + 1;
    hy1 = dy[1];
+   x = xgrid[0] + dx[0];
+   hx1 = dx[0] * xcoef[0];
    for (int i = 1; i < xsplitcount[0]; i++)
    {
       if (bctype[3] == 1)
@@ -601,23 +648,27 @@ int main()
          mat[2][index] = 1;
          mat[3][index] = 0;
          mat[4][index] = 0;
-         b[index] = bcvalue[3];
+         b[index] = BC(x, ygrid[1], 3);
 
       }
       else
       {
          mat[0][index] = -lambda / hy1;
          mat[1][index] = 0;
-         mat[2][index] = lambda / hy1;
+         mat[2][index] = lambda / hy1 + betta;
          mat[3][index] = 0;
          mat[4][index] = 0;
-         b[index] = bcvalue[3];
+         b[index] = BC(x, ygrid[1], 3) * betta;
       }
       index += 1;
+      x += hx1;
+      hx1 *= xcoef[0];
    }
 
    index = ysplitcount[0] * m + xsplitcount[0] + xsplitcount[1] + 1;
    hy1 = dy[1];
+   x = xgrid[2] + dx[2];
+   hx1 = dx[2] * xcoef[2];
    for (int i = 1; i < xsplitcount[2]; i++)
    {
       if (bctype[7] == 1)
@@ -627,24 +678,28 @@ int main()
          mat[2][index] = 1;
          mat[3][index] = 0;
          mat[4][index] = 0;
-         b[index] = bcvalue[7];
+         b[index] = BC(x, ygrid[1], 7);
 
       }
       else
       {
          mat[0][index] = -lambda / hy1;
          mat[1][index] = 0;
-         mat[2][index] = lambda / hy1;
+         mat[2][index] = lambda / hy1 + betta;
          mat[3][index] = 0;
          mat[4][index] = 0;
-         b[index] = bcvalue[7];
+         b[index] = BC(x, ygrid[1], 7) * betta;
       }
       index += 1;
+      x += hx1;
+      hx1 *= xcoef[2];
    }
 
    index = (ysplitcount[0] + ysplitcount[1]) * m + 1;
    hy0 = dy[1] * quickpower(ycoef[1], ysplitcount[1] - 1);
-   for (int i = 1; i < m - 1; i++)
+   x = xgrid[0] + dx[0];
+   hx1 = dx[0] * xcoef[0];
+   for (int i = 1; i < xsplitcount[0]; i++)
    {
       if (bctype[5] == 1)
       {
@@ -653,23 +708,81 @@ int main()
          mat[2][index] = 1;
          mat[3][index] = 0;
          mat[4][index] = 0;
-         b[index] = bcvalue[5];
+         b[index] = BC(x, ygrid[2], 5);
 
       }
       else
       {
          mat[0][index] = 0;
          mat[1][index] = 0;
-         mat[2][index] = lambda / hy0;
+         mat[2][index] = lambda / hy0 + betta;
          mat[3][index] = 0;
          mat[4][index] = -lambda / hy0;
-         b[index] = bcvalue[5];
+         b[index] = BC(x, ygrid[2], 5) * betta;
       }
       index += 1;
+      x += hx1;
+      hx1 *= xcoef[0];
+   }
+   x = xgrid[1];
+   hx1 = dx[1];
+   for (int i = 0; i < xsplitcount[1]; i++)
+   {
+      if (bctype[5] == 1)
+      {
+         mat[0][index] = 0;
+         mat[1][index] = 0;
+         mat[2][index] = 1;
+         mat[3][index] = 0;
+         mat[4][index] = 0;
+         b[index] = BC(x, ygrid[2], 5);
+
+      }
+      else
+      {
+         mat[0][index] = 0;
+         mat[1][index] = 0;
+         mat[2][index] = lambda / hy0 + betta;
+         mat[3][index] = 0;
+         mat[4][index] = -lambda / hy0;
+         b[index] = BC(x, ygrid[2], 5) * betta;
+      }
+      index += 1;
+      x += hx1;
+      hx1 *= xcoef[1];
+   }
+   x = xgrid[2];
+   hx1 = dx[2];
+   for (int i = 0; i < xsplitcount[2]; i++)
+   {
+      if (bctype[5] == 1)
+      {
+         mat[0][index] = 0;
+         mat[1][index] = 0;
+         mat[2][index] = 1;
+         mat[3][index] = 0;
+         mat[4][index] = 0;
+         b[index] = BC(x, ygrid[2], 5);
+
+      }
+      else
+      {
+         mat[0][index] = 0;
+         mat[1][index] = 0;
+         mat[2][index] = lambda / hy0 + betta;
+         mat[3][index] = 0;
+         mat[4][index] = -lambda / hy0;
+         b[index] = BC(x, ygrid[2], 5) * betta;
+      }
+      index += 1;
+      x += hx1;
+      hx1 *= xcoef[2];
    }
 
-   index = ysplitcount[0]  * m + m;
-   hx1 = dx[0];;
+   index = ysplitcount[0] * m + m;
+   hx1 = dx[0];
+   y = ygrid[1] + dy[1];
+   hy1 = dy[1] * ycoef[1];
    for (int i = 1; i < xsplitcount[2]; i++)
    {
       if (bctype[4] == 1)
@@ -679,23 +792,27 @@ int main()
          mat[2][index] = 1;
          mat[3][index] = 0;
          mat[4][index] = 0;
-         b[index] = bcvalue[4];
+         b[index] = BC(xgrid[0], y, 4);
 
       }
       else
       {
          mat[0][index] = 0;
          mat[1][index] = -lambda / hx1;
-         mat[2][index] = lambda / hx1;
+         mat[2][index] = lambda / hx1 + betta;
          mat[3][index] = 0;
          mat[4][index] = 0;
-         b[index] = bcvalue[4];
+         b[index] = BC(xgrid[0], y, 4) * betta;
       }
       index += m;
+      y += hy1;
+      hy1 *= ycoef[1];
    }
 
    index = ysplitcount[0] * m + m - 1 + m;
    hx0 = dx[2] * quickpower(xcoef[2], xsplitcount[2] - 1);
+   y = ygrid[1] + dy[1];
+   hy1 = dy[1] * ycoef[1];
    for (int i = 1; i < ysplitcount[1]; i++)
    {
       if (bctype[6] == 1)
@@ -705,19 +822,21 @@ int main()
          mat[2][index] = 1;
          mat[3][index] = 0;
          mat[4][index] = 0;
-         b[index] = bcvalue[6];
+         b[index] = BC(xgrid[3], y, 6);
 
       }
       else
       {
          mat[0][index] = 0;
          mat[1][index] = 0;
-         mat[2][index] = lambda / hx0;
+         mat[2][index] = lambda / hx0 + betta;
          mat[3][index] = -lambda / hx0;
          mat[4][index] = 0;
-         b[index] = bcvalue[6];
+         b[index] = BC(xgrid[3], y, 6) * betta;
       }
       index += m;
+      y += hy1;
+      hy1 *= ycoef[1];
    }
 
    //заполн€ем внутренние ребра
@@ -730,11 +849,11 @@ int main()
    x = xgrid[1] + hx0;
    for (int i = 1; i < xsplitcount[1]; i++)
    {
-      mat[0][index] = -lambda*2 / hy1 / (hy1 + hy0);
-      mat[1][index] = -lambda*2 / hx1 / (hx1 + hx0);
-      mat[2][index] = lambda *2* (1.0 / hx1 / hx0 + 1.0 / hy1 / hy0) + gamma;
-      mat[3][index] = -lambda *2/ (hx0) / (hx1 + hx0);
-      mat[4][index] = -lambda *2/ (hy0) / (hy1 + hy0);
+      mat[0][index] = -lambda * 2 / hy1 / (hy1 + hy0);
+      mat[1][index] = -lambda * 2 / hx1 / (hx1 + hx0);
+      mat[2][index] = lambda * 2 * (1.0 / hx1 / hx0 + 1.0 / hy1 / hy0) + gamma;
+      mat[3][index] = -lambda * 2 / (hx0) / (hx1 + hx0);
+      mat[4][index] = -lambda * 2 / (hy0) / (hy1 + hy0);
       b[index] = func(x, y);
       x += hx1;
       hx0 = hx1;
@@ -751,11 +870,11 @@ int main()
    x = xgrid[1];
    for (int i = 1; i < ysplitcount[1]; i++)
    {
-      mat[0][index] = -lambda *2/ hy1 / (hy1 + hy0);
-      mat[1][index] = -lambda *2/ hx1 / (hx1 + hx0);
-      mat[2][index] = lambda *2* (1.0 / hx1 / hx0 + 1.0 / hy1 / hy0) + gamma;
-      mat[3][index] = -lambda *2/ (hx0) / (hx1 + hx0);
-      mat[4][index] = -lambda *2/ (hy0) / (hy1 + hy0);
+      mat[0][index] = -lambda * 2 / hy1 / (hy1 + hy0);
+      mat[1][index] = -lambda * 2 / hx1 / (hx1 + hx0);
+      mat[2][index] = lambda * 2 * (1.0 / hx1 / hx0 + 1.0 / hy1 / hy0) + gamma;
+      mat[3][index] = -lambda * 2 / (hx0) / (hx1 + hx0);
+      mat[4][index] = -lambda * 2 / (hy0) / (hy1 + hy0);
       b[index] = func(x, y);
       y += hy1;
       hy0 = hy1;
@@ -772,11 +891,11 @@ int main()
    x = xgrid[2];
    for (int i = 1; i < ysplitcount[1]; i++)
    {
-      mat[0][index] = -lambda *2/ hy1 / (hy1 + hy0);
-      mat[1][index] = -lambda *2/ hx1 / (hx1 + hx0);
-      mat[2][index] = lambda *2* (1.0 / hx1 / hx0 + 1.0 / hy1 / hy0) + gamma;
-      mat[3][index] = -lambda *2/ (hx0) / (hx1 + hx0);
-      mat[4][index] = -lambda *2/ (hy0) / (hy1 + hy0);
+      mat[0][index] = -lambda * 2 / hy1 / (hy1 + hy0);
+      mat[1][index] = -lambda * 2 / hx1 / (hx1 + hx0);
+      mat[2][index] = lambda * 2 * (1.0 / hx1 / hx0 + 1.0 / hy1 / hy0) + gamma;
+      mat[3][index] = -lambda * 2 / (hx0) / (hx1 + hx0);
+      mat[4][index] = -lambda * 2 / (hy0) / (hy1 + hy0);
       b[index] = func(x, y);
       y += hy1;
       hy0 = hy1;
@@ -786,16 +905,27 @@ int main()
 
 
 
-   real omega = 0.9;
+   real omega = 0.9;//коэфициент релаксации
    real precision = 1e-7;
    int maxiter = 100000;
    int k = SolveZeidelRelax(n, m, precision, maxiter, mat, b, x0, omega);
-   index = ysplitcount[0] * m+m;
-   for (int i = 0; i < m; i+=2)
+   index = ysplitcount[0] * m + m;
+   for (int i = ysplitcount[0] + ysplitcount[1]; i >= ysplitcount[0]; i--)
    {
-       printf_s("%f ", x0[index + i]);
+      for (int j = 0; j < m; j++)
+      {
+         printf_s("%f ", x0[i * m + j]);
+      }
+      printf_s("\n");
    }
-       printf_s("sosi trak");
+   for (int i = ysplitcount[0] - 1; i >= 0; i--)
+   {
+      for (int j = xsplitcount[0]; j < xsplitcount[0] + xsplitcount[1] + 1; j++)
+      {
+         printf_s("%f ", x0[i * m + j]);
+      }
+      printf_s("\n");
+   }
 }
 
 void JacobiIterationRelax(int n, int m, real** mat, real* b, real* x0, real* x, real omega)
@@ -824,13 +954,6 @@ void JacobiIterationRelax(int n, int m, real** mat, real* b, real* x0, real* x, 
    }
 }
 
-/*void BlockRelaxIteration(int n, int m, int p, real** mat, real* b, real* x0, real* x, real omega)
-{
-   if (n % p == 0)
-   {
-
-   }
-}*/
 
 void MatrixMult(int n, int m, real** mat, real* x, real* b)//Ax=b
 {
